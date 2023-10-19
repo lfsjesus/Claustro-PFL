@@ -2,6 +2,8 @@
 clear :- write('\e[2J').
 
 /****MENU IO****/
+% Documentation of format/2: https://sicstus.sics.se/sicstus/docs/latest4/html/sicstus.html/mpg_002dref_002dformat.html
+
 menuH1(Title) :-
     format('~n~`*t ~p ~`*t~75|~n', [Title]).
 
