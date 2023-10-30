@@ -1,7 +1,7 @@
 :- consult('menu_display.pl').
 
 mainMenu :-
-    repeat,
+    %repeat, 
     clear,
     menuH1('CLAUSTRO'),
     menunl,
@@ -26,11 +26,31 @@ mainMenu :-
  */
 
 execMenuChoice(0) :- quitGame.
-/*execMenuChoice(1) :- player vs player*/
+execMenuChoice(1) :- setGame(p-p). % playerVsPlayer.
 execMenuChoice(2) :- playerVsBot.
 execMenuChoice(3) :- botVsBot.
 execMenuChoice(4) :- instructions.
 
+
+setGame(Mode) :-
+    clear,
+    menuH1('Choose a board size'),
+    menunl,
+    menuString('Choose width N: '),
+    menunl,
+    menuFill, nl,
+
+    readInputBetween(3, 10, N),
+    clear,
+    menuH1('Choose a board size'),
+    menunl,
+    menuString('Choose height M: '),
+    menunl,
+    menuFill, nl,
+
+    readInputBetween(3, 10, M),
+    gameInit(N, M, Mode),
+    fail. % If something is failing unexpectedly, CHECK THIS LINE.
 
 
 /**
@@ -42,15 +62,15 @@ quitGame :-
     menuH1('Thanks for playing!'), nl,
     menuFill.
 
-/* playerVsPlayer :- */
 
-/* playerVsBot :- */
+playerVsBot :- 
+    chooseBotDifficulty('Choose bot difficulty', Choice),
+    setGame(p-Choice).
 
-/* botVsBot :- */
-
-
-/* chooseBotDifficulty(...) :- */
-
+botVsBot :- 
+    chooseBotDifficulty('Choose bot 1 difficulty', Choice1),
+    chooseBotDifficulty('Choose bot 2 difficulty', Choice2),
+    setGame(Choice1-Choice2).
 
 instructions :-
     clear,
@@ -63,3 +83,17 @@ instructions :-
     skip_line,
     fail.
 
+
+chooseBotDifficulty(Text, Choice) :-
+    clear,
+    menuH1('Choose bot difficulty'),
+    menunl,
+    menuString(Text),
+    menunl,
+    menuHeaders('-Options-', '-Description-'),
+    menunl,
+    menuChoice(1, 'Easy - Random moves'),
+    menuChoice(2, 'Hard - Greedy moves'),
+    menunl,
+    menuFill, nl,
+    readInputBetween(1, 2, Choice).
