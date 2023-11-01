@@ -40,7 +40,7 @@ setGame(Mode) :-
     menunl,
     menuFill, nl,
 
-    readInputBetween(3, 10, N),
+    readInputBetween(5, 10, N),
     clear,
     menuH1('Choose a board size'),
     menunl,
@@ -48,7 +48,7 @@ setGame(Mode) :-
     menunl,
     menuFill, nl,
 
-    readInputBetween(3, 10, M),
+    readInputBetween(5, 10, M),
     gameInit(N, M, Mode),
     fail. % If something is failing unexpectedly, CHECK THIS LINE.
 
