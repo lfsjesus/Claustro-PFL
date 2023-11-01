@@ -1,6 +1,8 @@
+
 gameInit(N, M, P1-P2) :- 
     initial_state(N, M, (Turn, MoveHistory, Board)),
     setSpecialSquares(N, M, Board, NewBoard),
+    write(NewBoard).
 
     /* display_game(GameState), */
     
