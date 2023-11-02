@@ -52,7 +52,6 @@ setSpecialSquares(N, M, Board, NewBoard) :-
     change_cell(NewBoard3, M, N, neutral, NewBoard).
 
 
-
 setNInitialPieces(0, _, _, List, List).
 
 setNInitialPieces(N, StartPos, NewValue, List, NewList) :-
@@ -62,13 +61,30 @@ setNInitialPieces(N, StartPos, NewValue, List, NewList) :-
     NewN is N - 1,
     setNInitialPieces(NewN, NewStartPos, NewValue, NewList1, NewList).
 
+
+setMInitialPieces(0, _, _, _, Board, Board).
+
+setMInitialPieces(MPieces, StartPos, Col, NewValue, Board, NewBoard) :-
+    MPieces > 0,
+    change_cell(Board, StartPos, Col, NewValue, NewBoard1),
+    NewStartPos is StartPos + 1,
+    NewMPieces is MPieces - 1,
+    setMInitialPieces(NewMPieces, NewStartPos, Col, NewValue, NewBoard1, NewBoard).    
+
+
 setInitialPieces(N, M, Board, NewBoard) :-
-    nth1(1, Board, FirstRow),
-    setNInitialPieces(N, 3, blue, FirstRow, NewFirstRow),
+    PiecesN is N - 3,
+    PiecesM is M - 3,
+    % Blue pieces
+    nth1(1, Board, FirstRow),   
+    setNInitialPieces(PiecesN, 3, blue, FirstRow, NewFirstRow),
     replace_at_position(1, NewFirstRow, Board, NewBoard1),
+    setMInitialPieces(PiecesM, 2, N, blue, NewBoard1, NewBoard2),
+    % Green pieces
     nth1(M, Board, LastRow),
-    setNInitialPieces(N, 2, green, LastRow, NewLastRow),
-    replace_at_position(M, NewLastRow, NewBoard1, NewBoard). 
+    setNInitialPieces(PiecesN, 2, green, LastRow, NewLastRow),
+    replace_at_position(M, NewLastRow, NewBoard2, NewBoard3),
+    setMInitialPieces(PiecesM, 3, 1, green, NewBoard3, NewBoard).
 
 
 

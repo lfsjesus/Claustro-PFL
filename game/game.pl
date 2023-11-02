@@ -1,10 +1,9 @@
 
 gameInit(N, M, P1-P2) :- 
     initial_state(N, M, (Turn, MoveHistory, Board)),
-    setSpecialSquares(N, M, Board, NewBoard),
-    PiecesN is N - 3,    
-    setInitialPieces(PiecesN, M, NewBoard, NewNewBoard),
-    write(NewNewBoard).
+    setSpecialSquares(N, M, Board, NewBoard), 
+    setInitialPieces(N, M, NewBoard, NewNewBoard),
+    printList(NewNewBoard).
 
 
     /* display_game(GameState), */
@@ -33,5 +32,10 @@ initial_state(
 ).
 
 */
+
+printList([]).
+printList([H|T]) :-
+    write(H), nl,
+    printList(T).
 
 
