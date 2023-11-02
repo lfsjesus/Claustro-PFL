@@ -86,8 +86,10 @@ setInitialPieces(N, M, Board, NewBoard) :-
     replace_at_position(M, NewLastRow, NewBoard2, NewBoard3),
     setMInitialPieces(PiecesM, 3, 1, green, NewBoard3, NewBoard).
 
+getSquare(X, Y, Board, Value) :-
+    nth1(Y, Board, Row),           
+    nth1(X, Row, Value).
 
+checkSquareType(X, Y, Type, Board) :-
+    getSquare(X, Y, Board, Type).
 
-
-
-        

@@ -4,6 +4,7 @@ gameInit(N, M, P1-P2) :-
     setSpecialSquares(N, M, Board, NewBoard), 
     setInitialPieces(N, M, NewBoard, NewNewBoard),
     printList(NewNewBoard),
+    checkSquare(neutral, X, Y, NewNewBoard),
     gameLoop((Turn, MoveHistory, Board), PlayerType, Difficulty, N, M).
 
 initial_state(N, M, (Turn, MoveHistory, Board)) :-
