@@ -18,6 +18,9 @@ gameLoop(GameState, PlayerType, Difficulty, N, M) :-
     %gameLoop(NewGameState, NewPlayerType, Difficulty), !.
 
 
+
+
+
 choosePiece(N, M, GameState, PlayerType, Piece) :-
     nl,
     write('CHOOSE A PIECE TO MOVE:'), nl, nl,
@@ -25,13 +28,12 @@ choosePiece(N, M, GameState, PlayerType, Piece) :-
     readInputBetween(1, N, X), nl, nl,
     write('--- Y coordinate: ---'), nl,
     readInputBetween(1, M, Y), nl, nl.
-    % something here.
+
+
 
 /*
 % initial_state(+N, +M, -GameState)
 initial_state(
-
-
     game_state(
         1, % Turn
         [], % MoveHistory

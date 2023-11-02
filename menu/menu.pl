@@ -1,7 +1,7 @@
 :- consult('menu_display.pl').
 
 mainMenu :-
-    %repeat, 
+    repeat, 
     clear,
     menuH1('CLAUSTRO'),
     menunl,
@@ -65,7 +65,7 @@ quitGame :-
 
 playerVsBot :- 
     chooseBotDifficulty('Choose bot difficulty', Choice),
-    setGame(p-Choice).
+    setGame(p-Choice). 
 
 botVsBot :- 
     chooseBotDifficulty('Choose bot 1 difficulty', Choice1),
