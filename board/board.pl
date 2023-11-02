@@ -152,8 +152,48 @@ canMove(green, X1, Y1, X2, Y2, Board) :-
 
 
 % Can Capture From (X1,Y1) -> (X2,Y2)
+opponent(blue, green).
+opponent(green, blue).
+% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 + 1, Y1 - 1) and check if the square is green
+canCapture(Color, X1, Y1, X2, Y2, Board) :-
+    opponent(Color, Opponent),
+    X2 =:= X1 + 1,
+    Y2 =:= Y1 - 1,
+    checkSquareType(X2, Y2, Opponent, Board).
 
-% Can Capture From (X1,Y1) -> (X2,Y2) Blue - Move to the (X1 + 1, Y1 - 1) and check if the square is green
+% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 + 1, Y1 + 1) and check if the square is green
+canCapture(Color, X1, Y1, X2, Y2, Board) :-
+    opponent(Color, Opponent),
+    X2 =:= X1 + 1,
+    Y2 =:= Y1 + 1,
+    checkSquareType(X2, Y2, Opponent, Board).
+
+% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 - 1, Y1 - 1) and check if the square is green
+canCapture(Color, X1, Y1, X2, Y2, Board) :-
+    X2 =:= X1 - 1,
+    Y2 =:= Y1 - 1,
+    checkSquareType(X2, Y2, Opponent, Board).
+
+% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 - 1, Y1 + 1) and check if the square is green
+canCapture(Color, X1, Y1, X2, Y2, Board) :-
+    X2 =:= X1 - 1,
+    Y2 =:= Y1 + 1,
+    checkSquareType(X2, Y2, Opponent, Board).
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
