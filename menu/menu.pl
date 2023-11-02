@@ -1,7 +1,7 @@
 :- consult('menu_display.pl').
 
 mainMenu :-
-    repeat, 
+    %repeat, 
     clear,
     menuH1('CLAUSTRO'),
     menunl,
