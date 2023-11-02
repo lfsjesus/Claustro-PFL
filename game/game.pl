@@ -2,7 +2,10 @@
 gameInit(N, M, P1-P2) :- 
     initial_state(N, M, (Turn, MoveHistory, Board)),
     setSpecialSquares(N, M, Board, NewBoard),
-    write(NewBoard).
+    PiecesN is N - 3,    
+    setInitialPieces(PiecesN, M, NewBoard, NewNewBoard),
+    write(NewNewBoard).
+
 
     /* display_game(GameState), */
     
@@ -30,3 +33,5 @@ initial_state(
 ).
 
 */
+
+

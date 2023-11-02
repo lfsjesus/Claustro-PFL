@@ -51,3 +51,27 @@ setSpecialSquares(N, M, Board, NewBoard) :-
     %same but for the last element of the last row
     change_cell(NewBoard3, M, N, neutral, NewBoard).
 
+
+
+setNInitialPieces(0, _, _, List, List).
+
+setNInitialPieces(N, StartPos, NewValue, List, NewList) :-
+    N > 0,
+    replace_at_position(StartPos, NewValue, List, NewList1),
+    NewStartPos is StartPos + 1,
+    NewN is N - 1,
+    setNInitialPieces(NewN, NewStartPos, NewValue, NewList1, NewList).
+
+setInitialPieces(N, M, Board, NewBoard) :-
+    nth1(1, Board, FirstRow),
+    setNInitialPieces(N, 3, blue, FirstRow, NewFirstRow),
+    replace_at_position(1, NewFirstRow, Board, NewBoard1),
+    nth1(M, Board, LastRow),
+    setNInitialPieces(N, 2, green, LastRow, NewLastRow),
+    replace_at_position(M, NewLastRow, NewBoard1, NewBoard). 
+
+
+
+
+
+        
