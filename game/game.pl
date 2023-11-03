@@ -13,18 +13,25 @@ initial_state(N, M, (1, MoveHistory, Board)) :-
 
 % Problema: como fazer duplo movimento quando se captura a peça?
 
-gameLoop(GameState, PlayerType, Difficulty, N, M) :-
+gameLoop(GameState, PlayerType, GameMode, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, MoveType),
     chooseMove(N, M, GameState, MoveType, PlayerType, Piece, Move),
     move(GameState, Piece, MoveType, Move, NewGameState),
+    changePlayerType(PlayerType, NewPlayerType, GameMode),
     printList(NewGameState),
-    gameLoop(NewGameState, NewPlayerType, Difficulty, N, M), !.
+    gameLoop(NewGameState, NewPlayerType, GameMode, N, M), !.
     %move(GameState, Piece, Move, NewGameState),
     %changeTurn(PlayerType, NewPlayerType, Difficulty),
     %gameLoop(NewGameState, NewPlayerType, Difficulty), !.
 
 
+% changeTurn(+PlayerType, -NewPlayerType, +GameMode)
+changePlayerType(p, p, p-p).
+changePlayerType(p, Level, p-Level).
+changePlayerType(Level, p, p-Level).
+changePlayerType(Level1, Level2, Level1-Level2).
+changePlayerType(Level1, Level2, Level2-Level1).
 
 odd(N) :- 
     N mod 2 =:= 1.

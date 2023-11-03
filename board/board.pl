@@ -5,6 +5,7 @@ getBoardSize(Board, N, M) :-
     nth1(1, Board, FirstRow),
     length(FirstRow, N).
 
+
 setBoard(N, M, Board) :-
     N >= 5,
     N =< 10,
@@ -114,7 +115,6 @@ move((Turn, MoveHistory, Board), Piece, 0, Move, (NewTurn, NewMoveHistory, NewBo
     movePiece(Piece, Move, Board, NewBoard),
     NewTurn is Turn + 1,
     append(MoveHistory, [Move], NewMoveHistory).
-
 
 
 movePiece((Color, X1, Y1), (X2, Y2), Board, NewBoard) :-
