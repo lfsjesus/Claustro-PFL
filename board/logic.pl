@@ -50,8 +50,6 @@ canMove(green, X1, Y1, X2, Y2, Board) :-
     checkSquareType(X2, Y2, greenGoal, Board).
 
 
-
-
 % Can Capture From (X1,Y1) -> (X2,Y2)
 opponent(blue, green).
 opponent(green, blue).
@@ -81,3 +79,14 @@ canCapture(Color, X1, Y1, X2, Y2, Board) :-
     Y2 =:= Y1 + 1,
     checkSquareType(X2, Y2, Opponent, Board).
   
+
+gameOver((_, _, Board), Winner) :-
+    checkGameOver(Board, Winner).
+
+checkGameOver(Board, blue) :-
+    getBoardSize(Board, _, M),
+    checkSquareType(1, M, blue, Board).
+
+checkGameOver(Board, green) :-
+    getBoardSize(Board, N, _),
+    checkSquareType(N, 1, green, Board).
