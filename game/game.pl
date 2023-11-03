@@ -16,8 +16,6 @@ initial_state(N, M, (1, MoveHistory, Board)) :-
 gameLoop(GameState, PlayerType, Difficulty, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, MoveType),
-    write('MoveType: '), write(MoveType), nl,
-    write('PlayerType: '), write(PlayerType), nl,
     chooseMove(N, M, GameState, MoveType, PlayerType, Piece, Move),
     move(GameState, Piece, MoveType, Move, NewGameState),
     printList(NewGameState),

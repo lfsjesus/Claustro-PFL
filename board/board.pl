@@ -1,5 +1,10 @@
 :- use_module(library(lists)).
 
+getBoardSize(Board, N, M) :-
+    length(Board, M),
+    nth1(1, Board, FirstRow),
+    length(FirstRow, N).
+
 setBoard(N, M, Board) :-
     N >= 5,
     N =< 10,
@@ -97,13 +102,9 @@ piece(Color, X, Y).
 
 % move(+GameState, +Piece, +MoveType, +Move, -NewGameState)
 move((Turn, MoveHistory, Board), Piece, 1, (X, Y), (NewTurn, NewMoveHistory, NewBoard)) :-
-    % move is the coordinates of captured piece
     checkSquareType(X, Y, Color, Board),
-    length(Board, M),
-    length([Board|_], N),
-    askReplacePosition(X1, Y1, N, M),
-    checkSquareType(X1, Y1, empty, Board),
-    movePiece((Color, X, Y), (X1, Y1), Board, NewBoard1),
+    askReplacePosition(X1, Y1, Board),
+    movePiece((Color, X, Y), (X1, Y1), Board, NewBoard1), % already checks if square is empty
     movePiece(Piece, (X, Y), NewBoard1, NewBoard),
     NewTurn is Turn + 1,
     append(MoveHistory, [Move], NewMoveHistory).

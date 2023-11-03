@@ -51,9 +51,14 @@ chooseMove(N, M, (Turn, MoveHistory, Board), 1, PlayerType, (Color, X1, Y1), (X2
     askBoardPosition(X2, Y2, N, M),
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
-askReplacePosition(X, Y, N, M) :-
+askReplacePosition(X, Y, Board) :-
+    repeat,
+    nl,
     write('CHOOSE A POSITION TO PLACE THE CAPTURED PIECE:'), nl, nl,
-    askBoardPosition(X, Y, N, M).
+    getBoardSize(Board, N, M),
+    askBoardPosition(X, Y, N, M),
+    checkSquareType(X, Y, empty, Board).
+
     
 
 
