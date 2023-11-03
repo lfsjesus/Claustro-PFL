@@ -17,9 +17,9 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
-    chooseMoveType(GameState, PlayerType, MoveType),
-    chooseMove(N, M, GameState, MoveType, PlayerType, Piece, Move),
-    move(GameState, Piece, MoveType, Move, NewGameState),
+    chooseMoveType(GameState, PlayerType, Move),
+    chooseMove(N, M, GameState, PlayerType, Piece, Move),
+    move(GameState, Piece, Move, NewGameState),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     printList(NewGameState),
     gameLoop(NewGameState, NewPlayerType, GameMode, N, M), !.

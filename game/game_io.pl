@@ -11,7 +11,7 @@ printTurn(Turn) :-
     greenOrBlue(Turn, Color),
     format('   *** ~p TURN *** ~n.', [Color]).
 
-chooseMoveType((Turn, MoveHistory, Board), p, MoveType) :-
+chooseMoveType((Turn, MoveHistory, Board), p, (MoveType, _, _)) :-
     askMoveType(p, MoveType).
 
 
@@ -35,7 +35,7 @@ askBoardPosition(X, Y, N, M) :-
     readInputBetween(1, M, Y), nl, nl.
 
 % in this case, piece is received. When user wants to move.
-chooseMove(N, M, (Turn, MoveHistory, Board), 0, PlayerType, (Color, X1, Y1), (X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2, Y2)) :-
     repeat,
     nl,
     write('CHOOSE A MOVE:'), nl, nl,
@@ -44,7 +44,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), 0, PlayerType, (Color, X1, Y1), (X2
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p) ~n.', [X1, Y1, X2, Y2]).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), 1, PlayerType, (Color, X1, Y1), (X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (1, X2, Y2)) :-
     repeat,
     nl,
     write('CHOOSE A PIECE TO CAPTURE:'), nl, nl,
