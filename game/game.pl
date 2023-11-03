@@ -1,24 +1,26 @@
 
+
 gameInit(N, M, P1-P2) :- 
-    initial_state(N, M, (Turn, MoveHistory, Board)),
-    setSpecialSquares(N, M, Board, NewBoard), 
-    setInitialPieces(N, M, NewBoard, NewNewBoard),
-    printList(NewNewBoard),
-    gameLoop((Turn, MoveHistory, NewNewBoard), PlayerType, Difficulty, N, M).
+    initial_state(N, M, GameState),
+    printList(GameState),
+    gameLoop(GameState, P1, Difficulty, N, M).
 
 initial_state(N, M, (1, MoveHistory, Board)) :-
-    setBoard(N, M, Board).
+    setBoard(N, M, Board1),
+    setSpecialSquares(N, M, Board1, Board2),
+    setInitialPieces(N, M, Board2, Board).
 
 
 gameLoop(GameState, PlayerType, Difficulty, N, M) :-
-    choosePiece(N, M, GameState, PlayerType, Piece).
-    %chooseMove(GameState, PlayerType, Piece, Move),
+    choosePiece(N, M, GameState, PlayerType, Piece),
+    chooseMoveType(GameState, PlayerType, MoveType),
+    chooseMove(N, M, GameState, MoveType, PlayerType, Piece, Move),
+    move(GameState, Piece, Move, NewGameState),
+    printList(NewGameState),
+    gameLoop(NewGameState, NewPlayerType, Difficulty, N, M), !.
     %move(GameState, Piece, Move, NewGameState),
     %changeTurn(PlayerType, NewPlayerType, Difficulty),
     %gameLoop(NewGameState, NewPlayerType, Difficulty), !.
-
-
-
 
 
 odd(N) :- 
@@ -29,26 +31,7 @@ greenOrBlue(Turn, green) :-
 
 greenOrBlue(Turn, blue) :-
     \+odd(Turn).
-
-
-
-choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, Piece) :-
-    repeat,
-    nl,
-    greenOrBlue(Turn, Color),
-    write(Color), write(' TURN'), nl, nl,
-    write('CHOOSE A PIECE TO MOVE:'), nl, nl,
-    write('--- X coordinate: ---'), nl,
-    readInputBetween(1, N, X), nl, nl,
-    write('--- Y coordinate: ---'), nl,
-    readInputBetween(1, M, Y), nl, nl,
-    checkSquareType(X, Y, Color, Board),
-    write('Succedeed ????').
-
-
-
-
-    
+ 
 
 
 
@@ -70,9 +53,10 @@ initial_state(
 
 */
 
-printList([]).
-printList([H|T]) :-
+printList((_, _, [])).
+
+printList((_, _, [H|T])) :-
     write(H), nl,
-    printList(T).
+    printList((_, _, T)).
 
 

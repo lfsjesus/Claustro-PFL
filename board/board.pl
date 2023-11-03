@@ -95,91 +95,16 @@ checkSquareType(X, Y, Type, Board) :-
 
 piece(Color, X, Y).
 
+move((Turn, MoveHistory, Board), Piece, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
+    movePiece(Piece, Move, Board, NewBoard),
+    NewTurn is Turn + 1,
+    append(MoveHistory, [Move], NewMoveHistory).
+
+movePiece((Color, X1, Y1), (X2, Y2), Board, NewBoard) :-
+    change_cell(Board, Y1, X1, empty, Board1),
+    change_cell(Board1, Y2, X2, Color, NewBoard).
 
 
-% Can Move From (X1,Y1) -> (X2,Y2)
-
-% Can Move From (X1,Y1) -> (X2,Y2) Blue - Move to the left and check if the square is empty
-canMove(blue, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 - 1,
-    Y2 =:= Y1,
-    checkSquareType(X2, Y2, empty, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Blue - Move to the left and check if the square is blueGoal
-canMove(blue, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 - 1,
-    Y2 =:= Y1,
-    checkSquareType(X2, Y2, blueGoal, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Blue - Move Down and check if the square is empty
-canMove(blue, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1,
-    Y2 =:= Y1 + 1,
-    checkSquareType(X2, Y2, empty, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Blue - Move Down and check if the square is blueGoal
-canMove(blue, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1,
-    Y2 =:= Y1 + 1,
-    checkSquareType(X2, Y2, blueGoal, Board).
-
-
-% Can Move From (X1,Y1) -> (X2,Y2) Green - Move to the right and check if the square is empty
-canMove(green, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 + 1,
-    Y2 =:= Y1,
-    checkSquareType(X2, Y2, empty, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Green - Move to the right and check if the square is greenGoal
-canMove(green, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 + 1,
-    Y2 =:= Y1,
-    checkSquareType(X2, Y2, greenGoal, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Green - Move Up and check if the square is empty
-canMove(green, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1,
-    Y2 =:= Y1 - 1,
-    checkSquareType(X2, Y2, empty, Board).
-
-% Can Move From (X1,Y1) -> (X2,Y2) Green - Move Up and check if the square is greenGoal
-canMove(green, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1,
-    Y2 =:= Y1 - 1,
-    checkSquareType(X2, Y2, greenGoal, Board).
-
-
-
-
-% Can Capture From (X1,Y1) -> (X2,Y2)
-opponent(blue, green).
-opponent(green, blue).
-% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 + 1, Y1 - 1) and check if the square is green
-canCapture(Color, X1, Y1, X2, Y2, Board) :-
-    opponent(Color, Opponent),
-    X2 =:= X1 + 1,
-    Y2 =:= Y1 - 1,
-    checkSquareType(X2, Y2, Opponent, Board).
-
-% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 + 1, Y1 + 1) and check if the square is green
-canCapture(Color, X1, Y1, X2, Y2, Board) :-
-    opponent(Color, Opponent),
-    X2 =:= X1 + 1,
-    Y2 =:= Y1 + 1,
-    checkSquareType(X2, Y2, Opponent, Board).
-
-% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 - 1, Y1 - 1) and check if the square is green
-canCapture(Color, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 - 1,
-    Y2 =:= Y1 - 1,
-    checkSquareType(X2, Y2, Opponent, Board).
-
-% Can Capture From (X1,Y1) -> (X2,Y2) - Move to the (X1 - 1, Y1 + 1) and check if the square is green
-canCapture(Color, X1, Y1, X2, Y2, Board) :-
-    X2 =:= X1 - 1,
-    Y2 =:= Y1 + 1,
-    checkSquareType(X2, Y2, Opponent, Board).
-  
 
 
 
