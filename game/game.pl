@@ -11,11 +11,13 @@ initial_state(N, M, (1, MoveHistory, Board)) :-
     setInitialPieces(N, M, Board2, Board).
 
 
+% Problema: como fazer duplo movimento quando se captura a peça?
+
 gameLoop(GameState, PlayerType, Difficulty, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, MoveType),
     chooseMove(N, M, GameState, MoveType, PlayerType, Piece, Move),
-    move(GameState, Piece, Move, NewGameState),
+    move(GameState, Piece, MoveType, Move, NewGameState),
     printList(NewGameState),
     gameLoop(NewGameState, NewPlayerType, Difficulty, N, M), !.
     %move(GameState, Piece, Move, NewGameState),
