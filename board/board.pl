@@ -95,15 +95,26 @@ checkSquareType(X, Y, Type, Board) :-
 
 piece(Color, X, Y).
 
+% move(+GameState, +Piece, +MoveType, +Move, -NewGameState)
+move((Turn, MoveHistory, Board), Piece, 1, (X, Y), (NewTurn, NewMoveHistory, NewBoard)) :-
+    % move is the coordinates of captured piece
+    checkSquareType(X, Y, Color, Board),
+    length(Board, M),
+    length([Board|_], N),
+    askReplacePosition(X1, Y1, N, M),
+    checkSquareType(X1, Y1, empty, Board),
+    movePiece((Color, X, Y), (X1, Y1), Board, NewBoard1),
+    movePiece(Piece, (X, Y), NewBoard1, NewBoard),
+    NewTurn is Turn + 1,
+    append(MoveHistory, [Move], NewMoveHistory).
+
+
 move((Turn, MoveHistory, Board), Piece, 0, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
     movePiece(Piece, Move, Board, NewBoard),
     NewTurn is Turn + 1,
     append(MoveHistory, [Move], NewMoveHistory).
 
-move((Turn, MoveHistory, Board), Piece, 1, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
-    movePiece(Piece, Move, Board, NewBoard),
-    NewTurn is Turn + 1,
-    append(MoveHistory, [Move], NewMoveHistory).
+
 
 movePiece((Color, X1, Y1), (X2, Y2), Board, NewBoard) :-
     change_cell(Board, Y1, X1, empty, Board1),
