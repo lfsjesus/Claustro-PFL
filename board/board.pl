@@ -95,7 +95,12 @@ checkSquareType(X, Y, Type, Board) :-
 
 piece(Color, X, Y).
 
-move((Turn, MoveHistory, Board), Piece, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
+move((Turn, MoveHistory, Board), Piece, 0, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
+    movePiece(Piece, Move, Board, NewBoard),
+    NewTurn is Turn + 1,
+    append(MoveHistory, [Move], NewMoveHistory).
+
+move((Turn, MoveHistory, Board), Piece, 1, Move, (NewTurn, NewMoveHistory, NewBoard)) :-
     movePiece(Piece, Move, Board, NewBoard),
     NewTurn is Turn + 1,
     append(MoveHistory, [Move], NewMoveHistory).

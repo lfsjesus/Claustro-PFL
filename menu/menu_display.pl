@@ -4,7 +4,7 @@ showInstructions :-
     menuString('The game board is a NxM grid, where N and M are'),
     menuString('integers between 5 and 10, inclusive.'),
     menuString('The board is square, but placed on a diamond.'),
-    menuString('Each corner of the diamond is each player\'s home'),
+    menuString('Each corner of the diamond is each player\'s'),
     menuString('goal. The left and right corners are not used.'),
     menunl,
 

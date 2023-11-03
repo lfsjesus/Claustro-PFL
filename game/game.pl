@@ -23,6 +23,7 @@ gameLoop(GameState, PlayerType, Difficulty, N, M) :-
     %gameLoop(NewGameState, NewPlayerType, Difficulty), !.
 
 
+
 odd(N) :- 
     N mod 2 =:= 1.
 

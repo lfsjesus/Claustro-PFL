@@ -42,11 +42,20 @@ chooseMove(N, M, (Turn, MoveHistory, Board), 0, PlayerType, (Color, X1, Y1), (X2
     format('   SUCCESS: You moved (~p, ~p) to (~p, ~p) ~n. ', [X1, Y1, X2, Y2]).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), 1, PlayerType, (Color, X1, Y1), (X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), 1, PlayerType, (Color, X1, Y1), (X2, Y2), (X3, Y3)) :-
     repeat,
     nl,
     write('CHOOSE A PIECE TO CAPTURE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
     canCapture(Color, X1, Y1, X2, Y2, Board),
-    write('   SUCCESS: You captured a piece. '), nl.
+    write('   SUCCESS: You captured a piece. '), nl, nl,
+    write('   Now choose a position to place the captured piece:'), nl, nl,
+    askReplacePosition(X3, Y3, N, M),
+    format('   You chose (~p, ~p). ~n.', [X3, Y3]).
+
+askReplacePosition(X, Y, N, M) :-
+    write('CHOOSE A POSITION TO PLACE THE CAPTURED PIECE:'), nl, nl,
+    askBoardPosition(X, Y, N, M).
+    
+
 
