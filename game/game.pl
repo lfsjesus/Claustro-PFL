@@ -16,16 +16,9 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl.
 
 
-valid_moves((Turn, _, Board), Player, ListOfMoves) :-
-    greenOrBlue(Turn, Player),
-    findall((Piece, Move), valid_move((Player, X1, Y1), Move, Board), ListOfMoves).
-
-valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board) :-    
-% verifica if can move x1,y1 -> x2,y2?
-
-
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
-    valid_moves(GameState, Player, ListOfMoves),
+    %valid_moves(GameState, Player, ListOfMoves),
+    %printList(ListOfMoves),
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),

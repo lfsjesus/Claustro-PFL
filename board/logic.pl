@@ -90,3 +90,67 @@ checkGameOver(Board, blue) :-
 checkGameOver(Board, green) :-
     getBoardSize(Board, N, _),
     checkSquareType(N, 1, green, Board).
+
+
+piecesOf(Player, Board, ListOfPieces) :-
+    findall(
+        (Player, X, Y),
+        (   
+            getBoardSize(Board, N, M),
+            between(1, N, X),
+            between(1, M, Y),
+            checkSquareType(X, Y, Player, Board)
+        ),
+        ListOfPieces
+    ).
+
+valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board) :- 
+    canMove(Player, X1, Y1, X2, Y2, Board).
+
+valid_moves((Turn, _, Board), Player, ListOfMoves) :-
+    greenOrBlue(Turn, Player),
+    piecesOf(Player, Board, ListOfPieces),
+    findall(
+        (MoveType, X2, Y2), 
+        (   
+            member((Player, X1, Y1), ListOfPieces),
+            getBoardSize(Board, N, M),
+            between(1, N, X1),   % Assuming N is the width of the board
+            between(1, M, Y1),   % Assuming M is the height of the board
+            between(1, N, X2),
+            between(1, M, Y2),
+            MoveType is 0,
+            valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board)
+        ),
+        ListOfMoves
+    ).
+
+
+
+
+
+/*
+valid_moves((Turn, _, Board), Player, ListOfMoves) :-
+    greenOrBlue(Turn, Player),
+    findall(((Player, X1, Y1), (MoveType, X2, Y2)), valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board), ListOfMoves).
+*/
+
+
+/*
+valid_moves((Turn, _, Board), Player, ListOfMoves) :-
+    greenOrBlue(Turn, Player),
+    findall(
+        ((Player, X1, Y1), (MoveType, X2, Y2)),
+        (   
+            getBoardSize(Board, N, M),
+            between(1, N, X1),   % Assuming N is the width of the board
+            between(1, M, Y1),   % Assuming M is the height of the board
+            checkSquareType(X1, Y1, Player, Board),
+            between(1, N, X2),
+            between(1, M, Y2),
+            MoveType is 0, 
+            valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board)
+        ),
+        ListOfMoves
+    ).
+    */
