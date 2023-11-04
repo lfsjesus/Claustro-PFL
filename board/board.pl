@@ -101,21 +101,27 @@ checkSquareType(X, Y, Type, Board) :-
 
 piece(Color, X, Y).
 
-% move(+GameState, +Piece, +MoveType, +Move, -NewGameState)
+% move(+GameState, +Piece, +Move, -NewGameState)
+
+
+/*
 move((Turn, MoveHistory, Board), Piece, (1, X, Y), (NewTurn, NewMoveHistory, NewBoard)) :-
     checkSquareType(X, Y, Color, Board),
-    askReplacePosition(X1, Y1, Board),
-    movePiece((Color, X, Y), (_, X1, Y1), Board, NewBoard1), % already checks if square is empty
-    movePiece(Piece, (_, X, Y), NewBoard1, NewBoard),
+    % askReplacePosition(X1, Y1, Board),
+    %movePiece((Color, X, Y), (_, X1, Y1), Board, NewBoard1), % already checks if square is empty
+    %movePiece(Piece, (_, X, Y), NewBoard1, NewBoard),
     NewTurn is Turn + 1,
     append(MoveHistory, [(1, X, Y)], NewMoveHistory).
+*/
 
+move(GameState, _, null, GameState).
 
-move((Turn, MoveHistory, Board), Piece, (0, X, Y), (NewTurn, NewMoveHistory, NewBoard)) :-
-    movePiece(Piece, (_, X, Y), Board, NewBoard),
-    NewTurn is Turn + 1,
-    append(MoveHistory, [(0, X, Y)], NewMoveHistory).
+move((Turn, MoveHistory, Board), Piece, Move, (Turn, NewMoveHistory, NewBoard)) :-
+    movePiece(Piece, Move, Board, NewBoard),
+    append(MoveHistory, [(0, X, Y)], NewMoveHistory). % NEED TO THINK ABOUT THIS SINCE REPLACEMENTS ARE GONNA COUNT AS MOVES
 
+changeTurn((Turn, MoveHistory, Board), (NewTurn, MoveHistory, Board)) :-
+    NewTurn is Turn + 1.
 
 movePiece((Color, X1, Y1), (_, X2, Y2), Board, NewBoard) :-
     change_cell(Board, Y1, X1, empty, Board1),
