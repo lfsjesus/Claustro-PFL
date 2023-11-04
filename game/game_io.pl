@@ -73,7 +73,8 @@ askReplacePosition(p, (1, X, Y), (Color, X, Y), (MoveType, X2, Y2), (_, _, Board
     getBoardSize(Board, N, M),
     askBoardPosition(X2, Y2, N, M),
     checkSquareType(X2, Y2, empty, Board),
-    MoveType is 0. % move the piece to an empty square
+    MoveType is 0,
+    format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X, Y, X2, Y2]).
 
 askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board)) :-
     checkSquareType(X, Y, Color, Board),
@@ -81,12 +82,10 @@ askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board
     random_between(1, N, X1),
     random_between(1, M, Y1),
     checkSquareType(X1, Y1, empty, Board),
-    MoveType is 0. 
-
-    
-
-
-
+    MoveType is 0,
+    write(' Bot moved the captured piece to the position: '), write((X1, Y1)), nl, nl,
+    write(' Bot is now on position: '), write((X, Y)), nl, nl,
+    pressEnterToContinue.
 
 
 chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (0, X2, Y2)) :-
@@ -106,13 +105,12 @@ chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (1, X2, Y2)) :-
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
 
-
-
-
 chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (0, X2, Y2)) :-
     greenOrBlue(Turn, Color),
     valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
-    random_member((0, X2, Y2), ListOfMoves).
+    random_member((0, X2, Y2), ListOfMoves),
+    format('  ~nBot moved (~p, ~p) to (~p, ~p). ~n~n', [X1, Y1, X2, Y2]),
+    pressEnterToContinue.
 
 
 chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (1, X2, Y2)) :-
@@ -121,6 +119,8 @@ chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (1, X2, Y2)) :-
     random_member((1, X2, Y2), ListOfMoves).
 
 
-    
+pressEnterToContinue :-
+    write(' Press [ENTER] to continue...'), nl,
+    get_char(_).    
 
 
