@@ -70,7 +70,7 @@ gameOver((Turn, _, Board), green) :-
     valid_moves((Turn, _, Board), green, ListOfMoves),
     length(ListOfMoves, 0).
 
-/*
+
 piecesOf(Player, Board, ListOfPieces) :-
     getBoardSize(Board, N, M),
     findall(
@@ -80,7 +80,7 @@ piecesOf(Player, Board, ListOfPieces) :-
         checkSquareType(X, Y, Player, Board)),
         ListOfPieces
     ).
-*/
+
 
 valid_move((Player, X1, Y1), (0, X2, Y2), Board) :- 
     canMove(Player, X1, Y1, X2, Y2, Board).
@@ -110,6 +110,36 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
         (        
             between(1, N, X1),
             between(1, M, Y1),
+            between(1, N, X2),
+            between(1, M, Y2),
+            checkSquareType(X1, Y1, Player, Board),
+            getBoardSize(Board, N, M),
+            valid_move((Player, X1, Y1), (1, X2, Y2), Board)
+        ),
+        ListOfMoves1
+    ),
+    append(ListOfMoves0, ListOfMoves1, ListOfMoves2),
+    sort(ListOfMoves2, ListOfMoves).
+
+
+% valid moves for piece
+valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
+    greenOrBlue(Turn, Player),
+    getBoardSize(Board, N, M),
+    findall(
+        ((0, X2, Y2)),
+        (   
+            between(1, N, X2),
+            between(1, M, Y2),       
+            checkSquareType(X1, Y1, Player, Board),
+            getBoardSize(Board, N, M),
+            valid_move((Player, X1, Y1), (0, X2, Y2), Board)
+        ),
+        ListOfMoves0
+    ),
+    findall(
+        ((1, X2, Y2)),
+        (        
             between(1, N, X2),
             between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),

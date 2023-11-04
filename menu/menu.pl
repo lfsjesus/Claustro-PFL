@@ -84,6 +84,9 @@ instructions :-
     fail.
 
 
+mapBotDifficulty(1, e). % easy
+mapBotDifficulty(2, h). % hard
+
 chooseBotDifficulty(Text, Choice) :-
     clear,
     menuH1('Choose bot difficulty'),
@@ -96,4 +99,5 @@ chooseBotDifficulty(Text, Choice) :-
     menuChoice(2, 'Hard - Greedy moves'),
     menunl,
     menuFill, nl,
-    readInputBetween(1, 2, Choice).
+    readInputBetween(1, 2, Num),
+    mapBotDifficulty(Num, Choice).
