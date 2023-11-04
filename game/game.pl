@@ -1,9 +1,9 @@
-
+:- use_module(library(random)).
 
 gameInit(N, M, P1-P2) :- 
     initial_state(N, M, GameState),
     printList(GameState),
-    gameLoop(GameState, P1, Difficulty, N, M).
+    gameLoop(GameState, P1, P1-P2, N, M).
 
 initial_state(N, M, (1, MoveHistory, Board)) :-
     setBoard(N, M, Board1),
@@ -13,7 +13,6 @@ initial_state(N, M, (1, MoveHistory, Board)) :-
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     gameOver(GameState, Winner), !,
-    notrace,
     write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl.
 
 
@@ -29,6 +28,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     move(GameState, Piece, Move, NewGameState),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     printList(NewGameState),
+    write("New Player Type: "), write(NewPlayerType), nl,
     gameLoop(NewGameState, NewPlayerType, GameMode, N, M), !.
     %move(GameState, Piece, Move, NewGameState),
     %changeTurn(PlayerType, NewPlayerType, Difficulty),
@@ -50,7 +50,6 @@ greenOrBlue(Turn, green) :-
 
 greenOrBlue(Turn, blue) :-
     \+odd(Turn).
- 
 
 
 

@@ -25,11 +25,16 @@ printTurn(Turn) :-
     greenOrBlue(Turn, Color),
     format('   *** ~p TURN *** ~n.', [Color]).
 
-chooseMoveType((Turn, MoveHistory, Board), p, Piece, (MoveType, _, _)) :-
+chooseMoveType((_, _, Board), p, Piece, (MoveType, _, _)) :-
     askMoveType(p, Piece, Board, MoveType).
 
+% easy bot move type does nothing. he chooses a random move despite the type.
+chooseMoveType((Turn, _, Board), e, Piece, Move).
+
+
+
 % in this case, piece is output
-choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X, Y)) :-
+choosePiece(N, M, (Turn, MoveHistory, Board), p, (Color, X, Y)) :-
     repeat,
     nl,
     greenOrBlue(Turn, Color),
@@ -39,6 +44,16 @@ choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X, Y)) :-
     checkSquareType(X, Y, Color, Board),
     pieceNotStuck((Color, X, Y), Board). % if piece is stuck, ask again
     format('   You chose (~p, ~p). ~n.', [X, Y]).
+
+choosePiece(N, M, (Turn, _, Board), e, Piece) :-
+    greenOrBlue(Turn, Color),
+    piecesOf(Color, Board, ListOfPieces),
+    randomPiece(ListOfPieces, Board, Piece).
+
+
+randomPiece(ListOfPieces, Board, Piece) :-
+    random_member(Piece, ListOfPieces),
+    pieceNotStuck(Piece, Board).
 
 
 askBoardPosition(X, Y, N, M) :-
@@ -55,7 +70,7 @@ askReplacePosition(X, Y, Board) :-
     askBoardPosition(X, Y, N, M),
     checkSquareType(X, Y, empty, Board).
 
-chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (0, X2, Y2)) :-
     repeat,
     nl,
     write('CHOOSE A MOVE:'), nl, nl,
@@ -64,13 +79,27 @@ chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X1, Y1, X2, Y2]).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (1, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (1, X2, Y2)) :-
     repeat,
     nl,
     write('CHOOSE A PIECE TO CAPTURE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
+
+
+
+
+chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (0, X2, Y2)) :-
+    greenOrBlue(Turn, Color),
+    valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
+    random_member((0, X2, Y2), ListOfMoves).
+
+
+chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (1, X2, Y2)) :-
+    greenOrBlue(Turn, Color),
+    valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
+    random_member((1, X2, Y2), ListOfMoves).
 
 
     
