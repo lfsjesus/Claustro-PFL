@@ -1,3 +1,6 @@
+:- use_module(between).
+
+
 
 % Define opponents and move directions for each color
 opponent(blue, green).
@@ -13,7 +16,6 @@ move_direction(green, 0, -1). % Move up
 
 % Can move from (X1, Y1) -> (X2, Y2)
 canMove(Color, X1, Y1, X2, Y2, Board) :-
-    opponent(Color, Opponent),
     move_direction(Color, XOffset, YOffset),
     X2 is X1 + XOffset,
     Y2 is Y1 + YOffset,
@@ -21,7 +23,6 @@ canMove(Color, X1, Y1, X2, Y2, Board) :-
 
 % Can move from (X1, Y1) -> (X2, Y2) to a goal square
 canMove(Color, X1, Y1, X2, Y2, Board) :-
-    opponent(Color, Opponent),
     move_direction(Color, XOffset, YOffset),
     X2 is X1 + XOffset,
     Y2 is Y1 + YOffset,
@@ -71,9 +72,12 @@ gameOver((Turn, _, Board), green) :-
 
 
 piecesOf(Player, Board, ListOfPieces) :-
+    getBoardSize(Board, N, M),
     findall(
         (Player, X, Y),
-        checkSquareType(X, Y, Player, Board),
+        (between(1, N, X),
+        between(1, M, Y),
+        checkSquareType(X, Y, Player, Board)),
         ListOfPieces
     ).
 
@@ -86,10 +90,15 @@ valid_move((Player, X1, Y1), (1, X2, Y2), Board) :-
 
 valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     greenOrBlue(Turn, Player),
+    getBoardSize(Board, N, M),
     piecesOf(Player, Board, ListOfPieces),
     findall(
         ((Player, X1, Y1), (0, X2, Y2)),
-        (
+        (   
+            between(1, N, X1),
+            between(1, M, Y1),
+            between(1, N, X2),
+            between(1, M, Y2),
             member((Player, X1, Y1), ListOfPieces),
             getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board)
@@ -98,7 +107,11 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     ),
     findall(
         ((Player, X1, Y1), (1, X2, Y2)),
-        (
+        (   
+            between(1, N, X1),
+            between(1, M, Y1),
+            between(1, N, X2),
+            between(1, M, Y2),
             member((Player, X1, Y1), ListOfPieces),
             getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board)
