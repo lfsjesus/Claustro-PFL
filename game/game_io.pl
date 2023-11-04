@@ -89,7 +89,6 @@ askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board
     write(' Bot is now on position: '), write((X, Y)), nl, nl,
     pressEnterToContinue.
 
-
 chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (0, X2, Y2)) :-
     repeat,
     nl,
