@@ -120,3 +120,39 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     ),
     append(ListOfMoves0, ListOfMoves1, ListOfMoves2),
     sort(ListOfMoves2, ListOfMoves).
+
+
+
+
+distance(X, Y, greenGoal, Board, Distance) :-
+    getBoardSize(Board, N, M),
+    X_Dist is N - X,
+    Y_Dist is Y - 1,
+    Distance is X_Dist + Y_Dist.
+
+
+distance(X, Y, blueGoal, Board, Distance) :-
+    getBoardSize(Board, N, M),
+    X_Dist is X - 1,
+    Y_Dist is M - Y,
+    Distance is X_Dist + Y_Dist.
+
+%furthest empty square from goal
+furthestPosition(Player, (_,_,Board), X, Y) :-
+    goal(Player, Goal),
+    getBoardSize(Board, N, M),
+    findall(
+        Distance-(X1,Y1),
+        (
+            between(1, N, X1),
+            between(1, M, Y1),
+            checkSquareType(X1, Y1, empty, Board),
+            distance(X1, Y1, Goal, Board, Distance)
+        ),
+        PositionsDistancesPairs
+    ),
+    keysort(PositionsDistancesPairs, SortedPairs),
+    last(SortedPairs, _-((X, Y))).
+
+
+

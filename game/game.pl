@@ -18,8 +18,11 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
 
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
+    %trace,
     valid_moves(GameState, Player, ListOfMoves),
     printList((_, _, ListOfMoves)),
+    furthestPosition(Player, GameState, X, Y),
+    write('Furthest empty is at '), write(X), write(', '), write(Y), nl,
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),
