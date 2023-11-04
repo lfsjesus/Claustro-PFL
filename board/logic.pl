@@ -53,23 +53,21 @@ canCapture(Color, X1, Y1, X2, Y2, Board) :-
     checkSquareType(X2, Y2, Opponent, Board).
 
 
-gameOver((_, _, Board), Winner) :-
-    checkGameOver(Board, Winner).
-
-checkGameOver(Board, blue) :-
+gameOver((_, _, Board), blue) :-
     getBoardSize(Board, _, M),
     checkSquareType(1, M, blue, Board).
 
-checkGameOver(Board, blue) :-
-    \+pieceNotStuck((blue, _, _), Board). % blue wins if he can't move
-
-
-checkGameOver(Board, green) :-
-    \+pieceNotStuck((green, _, _), Board). % green wins if he can't move
-
-checkGameOver(Board, green) :-
+gameOver((_, _, Board), green) :-
     getBoardSize(Board, N, _),
     checkSquareType(N, 1, green, Board).
+
+gameOver((Turn, _, Board), blue) :- 
+    valid_moves((Turn, _, Board), blue, ListOfMoves),
+    length(ListOfMoves, 0).
+
+gameOver((Turn, _, Board), green) :-
+    valid_moves((Turn, _, Board), green, ListOfMoves),
+    length(ListOfMoves, 0).
 
 
 piecesOf(Player, Board, ListOfPieces) :-

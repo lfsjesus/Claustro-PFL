@@ -13,15 +13,14 @@ initial_state(N, M, (1, MoveHistory, Board)) :-
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     gameOver(GameState, Winner), !,
+    notrace,
     write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl.
 
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
-
     valid_moves(GameState, Player, ListOfMoves),
     printList((_, _, ListOfMoves)),
     choosePiece(N, M, GameState, PlayerType, Piece),
-
     chooseMoveType(GameState, PlayerType, Piece, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),
     move(GameState, Piece, Move, NewGameState),
