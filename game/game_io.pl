@@ -1,3 +1,5 @@
+:- use_module(library(random)).
+
 moveTypeChoice(Option, Description) :-
     format('   [ ~p ] ~p ~n', [Option, Description]).
 
