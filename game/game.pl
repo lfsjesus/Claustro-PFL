@@ -1,8 +1,8 @@
 
 
-gameInit((N, M), P1-P2) :- 
+gameInit(N, M, P1-P2) :- 
     initial_state((N, M), GameState),
-    printList(GameState),
+    displayGame(GameState),
     gameLoop(GameState, P1, P1-P2, N, M).
 
 initial_state((N, M), (1, MoveHistory, Board)) :-
@@ -19,9 +19,9 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     %trace,
     valid_moves(GameState, Player, ListOfMoves),
-    printList((_, _, ListOfMoves)),
-    furthestPosition(Player, GameState, X, Y),
-    write('Furthest empty is at '), write(X), write(', '), write(Y), nl,
+    %printList((_, _, ListOfMoves)),
+    %furthestPosition(Player, GameState, X, Y),
+    %write('Furthest empty is at '), write(X), write(', '), write(Y), nl,
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),
@@ -31,7 +31,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     move(NewGameState, Piece, Move, NewGameState1),
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
-    printList(NewGameState2),
+    displayGame(NewGameState2),
     gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
 
 
