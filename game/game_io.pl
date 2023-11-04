@@ -40,15 +40,13 @@ askReplacePosition(X, Y, Board) :-
     askBoardPosition(X, Y, N, M),
     checkSquareType(X, Y, empty, Board).
 
-
-
 chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2, Y2)) :-
     repeat,
     nl,
     write('CHOOSE A MOVE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
     canMove(Color, X1, Y1, X2, Y2, Board),
-    format('  SUCCESS: You moved (~p, ~p) to (~p, ~p) ~n.', [X1, Y1, X2, Y2]).
+    format('  SUCCESS: You moved (~p, ~p) to (~p, ~p).', [X1, Y1, X2, Y2]).
 
 
 chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (1, X2, Y2)) :-
