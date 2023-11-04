@@ -100,7 +100,6 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
             between(1, N, X2),
             between(1, M, Y2),       
             checkSquareType(X1, Y1, Player, Board),
-            getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board)
         ),
         ListOfMoves0
@@ -113,7 +112,6 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
             between(1, N, X2),
             between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),
-            getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board)
         ),
         ListOfMoves1
@@ -132,7 +130,6 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
             between(1, N, X2),
             between(1, M, Y2),       
             checkSquareType(X1, Y1, Player, Board),
-            getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board)
         ),
         ListOfMoves0
@@ -143,7 +140,6 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
             between(1, N, X2),
             between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),
-            getBoardSize(Board, N, M),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board)
         ),
         ListOfMoves1
@@ -180,3 +176,52 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
     ),
     keysort(PositionsDistancesPairs, SortedPairs),
     last(SortedPairs, _-((X, Y))).
+
+
+moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score) :-
+    goal(Player, Goal),
+    distance(X2, Y2, Goal, Board, Distance),
+    Distance > 0,
+    Score is 1 / Distance.
+
+
+moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
+    goal(Player, Goal),
+    distance(X2, Y2, Goal, Board, Distance),
+    Distance > 0,
+    DistanceScore is (1 / Distance * 0.7),
+    CaptureScore is 0.3,
+    Score is DistanceScore + CaptureScore.
+
+mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
+    greenOrBlue(Turn, Player),
+    getBoardSize(Board, N, M),
+    findall(
+        Score-((Player, X1, Y1), (0, X2, Y2)),
+        (   
+            between(1, N, X1),
+            between(1, M, Y1),
+            between(1, N, X2),
+            between(1, M, Y2),    
+            checkSquareType(X1, Y1, Player, Board),
+            valid_move((Player, X1, Y1), (0, X2, Y2), Board),
+            moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score)
+        ),
+        ListOfMoves0
+    ),
+    findall(
+        Score-((Player, X1, Y1), (1, X2, Y2)),
+        (        
+            between(1, N, X1),
+            between(1, M, Y1),
+            between(1, N, X2),
+            between(1, M, Y2),
+            checkSquareType(X1, Y1, Player, Board),
+            valid_move((Player, X1, Y1), (1, X2, Y2), Board),
+            moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score)
+        ),
+        ListOfMoves1
+    ),
+    append(ListOfMoves1, ListOfMoves0, ListOfMoves2),
+    keysort(ListOfMoves2, SortedMoves),
+    nth1(1, SortedMoves, _-((Player, X1, Y1), (MoveType, X2, Y2))).
