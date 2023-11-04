@@ -1,3 +1,5 @@
+:- use_module(library(between)).
+
 % Can Move From (X1,Y1) -> (X2,Y2)
 
 % Can Move From (X1,Y1) -> (X2,Y2) Blue - Move to the left and check if the square is empty

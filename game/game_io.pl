@@ -14,8 +14,6 @@ printTurn(Turn) :-
 chooseMoveType((Turn, MoveHistory, Board), p, (MoveType, _, _)) :-
     askMoveType(p, MoveType).
 
-
-
 % in this case, piece is output
 choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X, Y)) :-
     repeat,
@@ -34,7 +32,16 @@ askBoardPosition(X, Y, N, M) :-
     write('--- Y coordinate: ---'), nl,
     readInputBetween(1, M, Y), nl, nl.
 
-% in this case, piece is received. When user wants to move.
+askReplacePosition(X, Y, Board) :-
+    repeat,
+    nl,
+    write('CHOOSE A POSITION TO PLACE THE CAPTURED PIECE:'), nl, nl,
+    getBoardSize(Board, N, M),
+    askBoardPosition(X, Y, N, M),
+    checkSquareType(X, Y, empty, Board).
+
+
+
 chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2, Y2)) :-
     repeat,
     nl,
@@ -51,13 +58,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (1, X2
     askBoardPosition(X2, Y2, N, M),
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
-askReplacePosition(X, Y, Board) :-
-    repeat,
-    nl,
-    write('CHOOSE A POSITION TO PLACE THE CAPTURED PIECE:'), nl, nl,
-    getBoardSize(Board, N, M),
-    askBoardPosition(X, Y, N, M),
-    checkSquareType(X, Y, empty, Board).
+
 
     
 
