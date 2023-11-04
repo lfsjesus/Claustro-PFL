@@ -81,8 +81,8 @@ askReplacePosition(p, (1, X, Y), (Color, X, Y), (MoveType, X2, Y2), (_, _, Board
 askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board)) :-
     checkSquareType(X, Y, Color, Board),
     getBoardSize(Board, N, M),
-    random_between(1, N, X1),
-    random_between(1, M, Y1),
+    random(1, N, X1),
+    random(1, M, Y1),
     checkSquareType(X1, Y1, empty, Board),
     MoveType is 0,
     write(' Bot moved the captured piece to the position: '), write((X1, Y1)), nl, nl,
