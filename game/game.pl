@@ -25,17 +25,16 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),
-    move(GameState, Piece, Move, NewGameState),
+
+    askReplacePosition(PlayerType, Move, Piece1, Move1, GameState),
+    move(GameState, Piece1, Move1, NewGameState),
+    move(NewGameState, Piece, Move, NewGameState1),
+    changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
-    printList(NewGameState),
-    write("New Player Type: "), write(NewPlayerType), nl,
-    gameLoop(NewGameState, NewPlayerType, GameMode, N, M), !.
-    %move(GameState, Piece, Move, NewGameState),
-    %changeTurn(PlayerType, NewPlayerType, Difficulty),
-    %gameLoop(NewGameState, NewPlayerType, Difficulty), !.
+    printList(NewGameState2),
+    gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
 
 
-% changeTurn(+PlayerType, -NewPlayerType, +GameMode)
 changePlayerType(p, p, p-p).
 changePlayerType(p, Level, p-Level).
 changePlayerType(Level, p, p-Level).
