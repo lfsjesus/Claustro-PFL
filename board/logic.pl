@@ -60,6 +60,13 @@ checkGameOver(Board, blue) :-
     getBoardSize(Board, _, M),
     checkSquareType(1, M, blue, Board).
 
+checkGameOver(Board, blue) :-
+    \+pieceNotStuck((blue, _, _), Board). % blue wins if he can't move
+
+
+checkGameOver(Board, green) :-
+    \+pieceNotStuck((green, _, _), Board). % green wins if he can't move
+
 checkGameOver(Board, green) :-
     getBoardSize(Board, N, _),
     checkSquareType(N, 1, green, Board).
