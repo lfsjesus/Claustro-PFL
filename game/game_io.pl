@@ -1,18 +1,32 @@
 moveTypeChoice(Option, Description) :-
     format('   [ ~p ] ~p ~n', [Option, Description]).
 
-askMoveType(PlayerType, Num) :-
+askMoveType(PlayerType, Piece, Board, Num) :-
+    valid_move(Piece, (0, X2, Y2), Board),
+    valid_move(Piece, (1, X3, Y3), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl,
     moveTypeChoice(1, 'Capture a piece'), nl,
     readInputBetween(0, 1, Num).
 
+askMoveType(PlayerType, Piece, Board, Num) :-
+    valid_move(Piece, (0, X2, Y2), Board), !,
+    nl, nl,
+    moveTypeChoice(0, 'Move this piece'), nl,
+    readInputBetween(0, 0, Num).
+
+askMoveType(PlayerType, Piece, Board, Num) :-
+    valid_move(Piece, (1, X2, Y2), Board), !,
+    nl, nl,
+    moveTypeChoice(1, 'Capture a piece'), nl,
+    readInputBetween(1, 1, Num).
+
 printTurn(Turn) :-
     greenOrBlue(Turn, Color),
     format('   *** ~p TURN *** ~n.', [Color]).
 
-chooseMoveType((Turn, MoveHistory, Board), p, (MoveType, _, _)) :-
-    askMoveType(p, MoveType).
+chooseMoveType((Turn, MoveHistory, Board), p, Piece, (MoveType, _, _)) :-
+    askMoveType(p, Piece, Board, MoveType).
 
 % in this case, piece is output
 choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X, Y)) :-
@@ -23,6 +37,7 @@ choosePiece(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X, Y)) :-
     write('CHOOSE A PIECE TO MOVE:'), nl, nl,
     askBoardPosition(X, Y, N, M),
     checkSquareType(X, Y, Color, Board),
+    pieceNotStuck((Color, X, Y), Board). % if piece is stuck, ask again
     format('   You chose (~p, ~p). ~n.', [X, Y]).
 
 
@@ -46,7 +61,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (0, X2
     write('CHOOSE A MOVE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
     canMove(Color, X1, Y1, X2, Y2, Board),
-    format('  SUCCESS: You moved (~p, ~p) to (~p, ~p).', [X1, Y1, X2, Y2]).
+    format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X1, Y1, X2, Y2]).
 
 
 chooseMove(N, M, (Turn, MoveHistory, Board), PlayerType, (Color, X1, Y1), (1, X2, Y2)) :-

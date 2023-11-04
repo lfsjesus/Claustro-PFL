@@ -21,7 +21,8 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     valid_moves(GameState, Player, ListOfMoves),
     printList((_, _, ListOfMoves)),
     choosePiece(N, M, GameState, PlayerType, Piece),
-    chooseMoveType(GameState, PlayerType, Move),
+
+    chooseMoveType(GameState, PlayerType, Piece, Move),
     chooseMove(N, M, GameState, PlayerType, Piece, Move),
     move(GameState, Piece, Move, NewGameState),
     changePlayerType(PlayerType, NewPlayerType, GameMode),

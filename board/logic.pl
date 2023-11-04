@@ -1,7 +1,3 @@
-:- use_module(library(between)).
-
-% Can Move From (X1,Y1) -> (X2,Y2)
-
 
 % Define opponents and move directions for each color
 opponent(blue, green).
@@ -33,6 +29,10 @@ canMove(Color, X1, Y1, X2, Y2, Board) :-
     checkSquareType(X2, Y2, Goal, Board).
        
 
+% pieceNotStuck(+Piece, +Board)
+pieceNotStuck((Player, X, Y), Board) :-
+    valid_move((Player, X, Y), (_, X2, Y2), Board).
+
 
 % Define opponents for each color
 opponent(blue, green).
@@ -51,7 +51,6 @@ canCapture(Color, X1, Y1, X2, Y2, Board) :-
     X2 is X1 + Direction,
     Y2 is Y1 + YOffset,
     checkSquareType(X2, Y2, Opponent, Board).
-
 
 
 gameOver((_, _, Board), Winner) :-
@@ -103,36 +102,3 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     ),
     append(ListOfMoves0, ListOfMoves1, ListOfMoves2),
     sort(ListOfMoves2, ListOfMoves).
-
-
-
-
-
-
-
-
-/*
-valid_moves((Turn, _, Board), Player, ListOfMoves) :-
-    greenOrBlue(Turn, Player),
-    findall(((Player, X1, Y1), (MoveType, X2, Y2)), valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board), ListOfMoves).
-*/
-
-
-/*
-valid_moves((Turn, _, Board), Player, ListOfMoves) :-
-    greenOrBlue(Turn, Player),
-    findall(
-        ((Player, X1, Y1), (MoveType, X2, Y2)),
-        (   
-            getBoardSize(Board, N, M),
-            between(1, N, X1),   % Assuming N is the width of the board
-            between(1, M, Y1),   % Assuming M is the height of the board
-            checkSquareType(X1, Y1, Player, Board),
-            between(1, N, X2),
-            between(1, M, Y2),
-            MoveType is 0, 
-            valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board)
-        ),
-        ListOfMoves
-    ).
-    */
