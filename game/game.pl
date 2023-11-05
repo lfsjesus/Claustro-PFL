@@ -27,40 +27,10 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     display_game(NewGameState2),
-    printMoveHistory(NewGameState2),
     gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
-
-printMoveHistory((_, MoveHistory, _)) :-
-    write(MoveHistory), nl.
 
 changePlayerType(p, p, p-p).
 changePlayerType(p, Level, p-Level).
 changePlayerType(Level, p, p-Level).
 changePlayerType(Level1, Level2, Level1-Level2).
 changePlayerType(Level1, Level2, Level2-Level1).
-
-/*
-% initial_state(+N, +M, -GameState)
-initial_state(
-    game_state(
-        1, % Turn
-        [], % MoveHistory
-        [
-            [neutral, empty, blue, blue, greenGoal],
-            [empty, empty, empty, empty, blue],
-            [green, empty, empty, empty, blue],
-            [green, empty, empty, empty, empty],
-            [blueGoal, green, green, empty, neutral]
-        ]
-    )
-).
-
-*/
-
-printList((_, _, [])).
-
-printList((_, _, [H|T])) :-
-    write(H), nl,
-    printList((_, _, T)).
-
-
