@@ -106,50 +106,51 @@ askReplacePosition(h, ((MyColor, _, _), (1, X, Y)), ((OpponentColor, X, Y), (Mov
     pressEnterToContinue.
 
 
-choose_move(Player, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (0, X2, Y2))) :-
+choose_move((Turn, MoveHistory, Board), Player, p, ((Player, X1, Y1), (0, X2, Y2))) :-
     repeat,
     nl,
+    getBoardSize(Board, N, M),
     write('CHOOSE A MOVE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
-    canMove(Color, X1, Y1, X2, Y2, Board),
+    canMove(Player, X1, Y1, X2, Y2, Board),
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X1, Y1, X2, Y2]).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (1, X2, Y2))) :-
+choose_move((Turn, MoveHistory, Board), Player, p, ((Player, X1, Y1), (1, X2, Y2))) :-
     repeat,
     nl,
+    getBoardSize(Board, N, M),
     write('CHOOSE A PIECE TO CAPTURE:'), nl, nl,
     askBoardPosition(X2, Y2, N, M),
-    canCapture(Color, X1, Y1, X2, Y2, Board).
+    canCapture(Player, X1, Y1, X2, Y2, Board).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (MoveType, X2, Y2))) :-
+choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),
-    valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
+    valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves),
     random_member((MoveType, X2, Y2), ListOfMoves), !,
-    chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (MoveType, X2, Y2))).
+    choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (MoveType, X2, Y2))).
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (0, X2, Y2))) :-
-    format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Color, X1, Y1, X2, Y2]),
+choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (0, X2, Y2))) :-
+    format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Player, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (1, X2, Y2))).
+choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (1, X2, Y2))).
 
-chooseMove(N, M, (Turn, MoveHistory, Board), h, ((Color, X1, Y1), (MoveType, X2, Y2))) :-
+choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),
-    greenOrBlue(Turn, Player),
     value((Turn, _, Board), Player, CurrentScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
-    mostValueableMove((Turn, _, Board), (Color, X1, Y1), (MoveType, X2, Y2)), !,
-    testMove((Turn,_, Board), (Color, X1, Y1), (MoveType, X2, Y2), (Turn,_, NewBoard)),
+    mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)), !,
+    testMove((Turn,_, Board), (Player, X1, Y1), (MoveType, X2, Y2), (Turn,_, NewBoard)),
     value((Turn, _, NewBoard), Player, NewScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
     GameStateScore is NewScore - CurrentScore,
     GameStateScore >= 0,
-    chooseMove(N, M, (Turn, MoveHistory, Board), h, ((Color, X1, Y1), (MoveType, X2, Y2))).
+    choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))).
 
-chooseMove(N, M, (Turn, MoveHistory, Board), h, ((Color, X1, Y1), (0, X2, Y2))) :-
-    format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Color, X1, Y1, X2, Y2]),
+choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (0, X2, Y2))) :-
+    format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Player, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-chooseMove(N, M, (Turn, MoveHistory, Board), h, ((Color, X1, Y1), (1, X2, Y2))).
+choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (1, X2, Y2))).
 
 

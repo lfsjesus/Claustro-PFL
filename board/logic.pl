@@ -19,6 +19,8 @@ getLastMoveHistory(List, Even, Odd) :-
     takeN(Even1, 3, Even),
     takeN(Odd1, 3, Odd).
 
+greenOrBlue((Turn, _, _), Player) :-
+    greenOrBlue(Turn, Player).
 
 greenOrBlue(Turn, green) :-
     odd(Turn).
@@ -26,8 +28,6 @@ greenOrBlue(Turn, green) :-
 greenOrBlue(Turn, blue) :-
     \+odd(Turn).
 
-greenOrBlue((Turn, _, _), Player) :-
-    greenOrBlue(Turn, Player).
 
 
 % Define opponents and move directions for each color

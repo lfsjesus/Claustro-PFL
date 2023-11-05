@@ -2,7 +2,7 @@
 
 gameInit(N, M, P1-P2, FirstPlayer) :-
     initial_state((N, M), GameState),
-    displayGame(GameState),
+    display_game(GameState),
     gameLoop(GameState, FirstPlayer, P1-P2, N, M).
 
 initial_state((N, M), (1, [], Board)) :-
@@ -27,13 +27,13 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     greenOrBlue(GameState, Player),
-    chooseMove(Player, GameState, PlayerType, Move),
+    choose_move(GameState, Player, PlayerType, Move),
     askReplacePosition(PlayerType, Move, Move1, GameState),
     move(GameState, Move1, NewGameState),
     move(NewGameState, Move, NewGameState1),
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
-    displayGame(NewGameState2),
+    display_game(NewGameState2),
     printMoveHistory(NewGameState2),
     gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
 
