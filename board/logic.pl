@@ -2,6 +2,24 @@
 odd(N) :- 
     N mod 2 =:= 1.
 
+takeN(_, 0, []).
+takeN([], _, []).
+takeN([X|Xs], N, [X|Ys]) :-
+    N > 0,
+    N1 is N - 1,
+    takeN(Xs, N1, Ys).
+
+evenAndOdd([], [], []).
+evenAndOdd([O], [O], []).
+evenAndOdd([O, E | Rest], [O | ORest], [E | ERest]) :-
+    evenAndOdd(Rest, ORest, ERest).
+
+getLastMoveHistory(List, Even, Odd) :-
+    evenAndOdd(List, Odd1, Even1),
+    takeN(Even1, 3, Even),
+    takeN(Odd1, 3, Odd).
+
+
 greenOrBlue(Turn, green) :-
     odd(Turn).
 
@@ -79,6 +97,57 @@ gameOver((Turn, _, Board), blue) :-
 gameOver((Turn, _, Board), green) :-
     valid_moves((Turn, _, Board), green, ListOfMoves),
     length(ListOfMoves, 0).
+
+
+gameOver((_, MoveHistory, _), Player) :-
+    length(MoveHistory, N),
+    N >= 6,
+    getLastMoveHistory(MoveHistory, GreenMoves, BlueMoves),
+    checkSameMoves(GreenMoves),
+    checkSameMoves(BlueMoves),
+    nth1(1, MoveHistory, ((Player, _, _), (_, _, _))).  
+
+
+checkSameMoves(UserMoves) :-
+    nth1(1, MoveHistory, ((_, X, Y), (_, X1, Y1))),
+    nth1(2, MoveHistory, ((_, X2, Y2), (_, X3, Y3))),
+    nth1(3, MoveHistory, ((_, X4, Y4), (_, X5, Y5))),
+
+    XDir1 is X1 - X,
+    YDir1 is Y1 - Y,
+
+    XDir2 is X3 - X2,
+    YDir2 is Y3 - Y2,
+
+    XDir3 is X5 - X4,
+    YDir3 is Y5 - Y4,
+
+    XDir1 =:= XDir2,
+    XDir2 =:= XDir3,
+
+    YDir1 =:= YDir2,
+    YDir2 =:= YDir3.
+
+
+
+    
+
+
+
+
+
+
+    
+
+
+
+
+
+((Color, X, Y), (MoveType, X1, Y1))
+
+checkMovesDifferent((_, X, Y), (_, X1, Y1)) :-
+    XDir is X1 - X,
+    YDir is Y1 - Y,
 
 
 piecesOf(Player, Board, ListOfPieces) :-
