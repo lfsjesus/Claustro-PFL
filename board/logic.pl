@@ -1,6 +1,3 @@
-:- use_module(between).
-
-
 % Define opponents and move directions for each color
 opponent(blue, green).
 opponent(green, blue).
@@ -74,9 +71,9 @@ piecesOf(Player, Board, ListOfPieces) :-
     getBoardSize(Board, N, M),
     findall(
         (Player, X, Y),
-        (between(1, N, X),
-        between(1, M, Y),
-        checkSquareType(X, Y, Player, Board)),
+        (
+        checkSquareType(X, Y, Player, Board)
+        ),
         ListOfPieces
     ).
 
@@ -93,11 +90,7 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     getBoardSize(Board, N, M),
     findall(
         ((Player, X1, Y1), (0, X2, Y2)),
-        (   
-            between(1, N, X1),
-            between(1, M, Y1),
-            between(1, N, X2),
-            between(1, M, Y2),       
+        (     
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board)
         ),
@@ -106,10 +99,6 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     findall(
         ((Player, X1, Y1), (1, X2, Y2)),
         (        
-            between(1, N, X1),
-            between(1, M, Y1),
-            between(1, N, X2),
-            between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board)
         ),
@@ -125,9 +114,7 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
     getBoardSize(Board, N, M),
     findall(
         ((0, X2, Y2)),
-        (   
-            between(1, N, X2),
-            between(1, M, Y2),       
+        (       
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board)
         ),
@@ -136,8 +123,6 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
     findall(
         ((1, X2, Y2)),
         (        
-            between(1, N, X2),
-            between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board)
         ),
@@ -166,8 +151,6 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
     findall(
         Distance-(X1,Y1),
         (
-            between(1, N, X1),
-            between(1, M, Y1),
             checkSquareType(X1, Y1, empty, Board),
             distance(X1, Y1, Goal, Board, Distance)
         ),
@@ -175,7 +158,17 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
     ),
     keysort(PositionsDistancesPairs, SortedPairs),
     sort(SortedPairs, SortedPairs2), % remove duplicates
-    last(SortedPairs2, _-((X, Y))).
+    last(SortedPairs2, HighestDistance-_),
+    findall(
+        (X1,Y1),
+        (
+            member(Distance-(X1,Y1), SortedPairs2),
+            Distance =:= HighestDistance
+        ),
+        BestPositions
+    ),
+    random_member((X,Y), BestPositions).
+
 
 
 moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score) :-
@@ -188,8 +181,8 @@ moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
     Distance > 0,
-    DistanceScore is (1 / Distance * 0.7),
-    CaptureScore is 0.3,
+    DistanceScore is (1 / Distance * 0.9),
+    CaptureScore is 0.1,
     Score is DistanceScore + CaptureScore.
 
 
@@ -198,11 +191,7 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
     getBoardSize(Board, N, M),
     findall(
         Score-((Player, X1, Y1), (0, X2, Y2)),
-        (   
-            between(1, N, X1),
-            between(1, M, Y1),
-            between(1, N, X2),
-            between(1, M, Y2),    
+        (    
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (0, X2, Y2), Board),
             moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score)
@@ -212,10 +201,6 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
     findall(
         Score-((Player, X1, Y1), (1, X2, Y2)),
         (        
-            between(1, N, X1),
-            between(1, M, Y1),
-            between(1, N, X2),
-            between(1, M, Y2),
             checkSquareType(X1, Y1, Player, Board),
             valid_move((Player, X1, Y1), (1, X2, Y2), Board),
             moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score)
@@ -251,8 +236,6 @@ value((Turn, _, Board), Player, Value) :-
     findall(
         Score,
         (   
-            between(1, N, X),
-            between(1, M, Y),
             checkSquareType(X, Y, Player, Board),
             distance(X, Y, Player, Board, Distance),
             Score is (1 / Distance) 
@@ -263,8 +246,6 @@ value((Turn, _, Board), Player, Value) :-
     findall(
         Score,
         (   
-            between(1, N, X),
-            between(1, M, Y),
             checkSquareType(X, Y, Opponent, Board),
             distance(X, Y, Opponent, Board, Distance),
             Score is (1 / Distance) * -1 
