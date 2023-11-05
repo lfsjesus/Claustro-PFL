@@ -1,9 +1,9 @@
 
 
-gameInit(N, M, P1-P2) :- 
+gameInit(N, M, P1-P2, FirstPlayer) :-
     initial_state((N, M), GameState),
     displayGame(GameState),
-    gameLoop(GameState, P1, P1-P2, N, M).
+    gameLoop(GameState, FirstPlayer, P1-P2, N, M).
 
 initial_state((N, M), (1, MoveHistory, Board)) :-
     setBoard(N, M, Board1),

@@ -31,6 +31,40 @@ execMenuChoice(2) :- playerVsBot.
 execMenuChoice(3) :- botVsBot.
 execMenuChoice(4) :- instructions.
 
+% mapPlayer(choice, player, gameMode)
+mapPlayer(0, p, p-p).
+mapPlayer(1, e, p-e).
+mapPlayer(1, h, p-h).
+
+
+askWhoStarts(p-e, FirstPlayer) :- 
+    clear,
+    menuH1('Who starts?'),
+    menunl,
+    menuHeaders('-Options-', '-Description-'),
+    menunl,
+    menuChoice(0, 'Player'),
+    menuChoice(1, 'Bot'),
+    menunl,
+    menuFill, nl,
+    readInputBetween(0, 1, Num),
+    mapPlayer(Num, FirstPlayer, p-e).
+    
+
+askWhoStarts(p-h, FirstPlayer) :- 
+    clear,
+    menuH1('Who starts?'),
+    menunl,
+    menuHeaders('-Options-', '-Description-'),
+    menunl,
+    menuChoice(0, 'Player'),
+    menuChoice(1, 'Bot'),
+    menunl,
+    menuFill, nl,
+    readInputBetween(0, 1, Num),
+    mapPlayer(Num, FirstPlayer, p-h).  
+
+askWhoStarts(_, _). 
 
 setGame(Mode) :-
     clear,
@@ -49,7 +83,8 @@ setGame(Mode) :-
     menuFill, nl,
 
     readInputBetween(5, 10, M),
-    gameInit(N, M, Mode),
+    askWhoStarts(Mode, FirstPlayer),
+    gameInit(N, M, Mode, FirstPlayer),
     fail. % If something is failing unexpectedly, CHECK THIS LINE.
 
 
