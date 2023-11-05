@@ -12,13 +12,13 @@ askMoveType(Piece, Board, Num) :-
     readInputBetween(0, 1, Num).
 
 askMoveType(Piece, Board, Num) :-
-    valid_move(Piece, (0, X2, Y2), Board), !,
+    valid_move(Piece, (0, _, _), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl, nl,
     readInputBetween(0, 0, Num).
 
 askMoveType(Piece, Board, Num) :-
-    valid_move(Piece, (1, X2, Y2), Board), !,
+    valid_move(Piece, (1, _, _), Board), !,
     nl, nl,
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
     readInputBetween(1, 1, Num).
@@ -32,14 +32,14 @@ chooseMoveType((_, _, Board), p, Piece, (Piece, (MoveType, _, _))) :-
     askMoveType(p, Piece, Board, MoveType).
 
 % easy bot move type does nothing. he chooses a random move despite the type.
-chooseMoveType((Turn, _, Board), e, Piece, (Piece, _)).
+chooseMoveType((_, _, _), e, Piece, (Piece, _)).
 
 % hard bot move type chooses the most valueable move
-chooseMoveType((Turn, _, Board), h, _, _).
+chooseMoveType((_, _, _), h, _, _).
 
 
 % in this case, piece is output
-choosePiece((Turn, MoveHistory, Board), p, (Color, X, Y)) :-
+choosePiece((Turn, _, Board), p, (Color, X, Y)) :-
     repeat,
     nl,
     greenOrBlue(Turn, Color),
@@ -63,7 +63,7 @@ choosePiece((Turn, _, Board), e, Piece) :-
     piecesOf(Color, Board, ListOfPieces),
     randomPiece(ListOfPieces, Board, Piece).
 
-choosePiece((Turn, _, Board), h, _).
+choosePiece((_, _, _), h, _).
 
 
 askBoardPosition(X, Y, N, M) :-
@@ -107,7 +107,7 @@ askReplacePosition(h, ((MyColor, _, _), (1, X, Y)), ((OpponentColor, X, Y), (Mov
     pressEnterToContinue.
 
 
-choose_move((Turn, MoveHistory, Board), Player, p, ((Player, X1, Y1), (0, X2, Y2))) :-
+choose_move((_, _, Board), Player, p, ((Player, X1, Y1), (0, X2, Y2))) :-
     repeat,
     nl,
     getBoardSize(Board, N, M),
@@ -117,7 +117,7 @@ choose_move((Turn, MoveHistory, Board), Player, p, ((Player, X1, Y1), (0, X2, Y2
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X1, Y1, X2, Y2]).
 
 
-choose_move((Turn, MoveHistory, Board), Player, p, ((Player, X1, Y1), (1, X2, Y2))) :-
+choose_move((_, _, Board), Player, p, ((Player, X1, Y1), (1, X2, Y2))) :-
     repeat,
     nl,
     getBoardSize(Board, N, M),
@@ -132,11 +132,11 @@ choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (MoveType,
     random_member((MoveType, X2, Y2), ListOfMoves), !,
     choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (MoveType, X2, Y2))).
 
-choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (0, X2, Y2))) :-
+choose_move((_, _, _), Player, e, ((Player, X1, Y1), (0, X2, Y2))) :-
     format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Player, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-choose_move((Turn, MoveHistory, Board), Player, e, ((Player, X1, Y1), (1, X2, Y2))).
+choose_move((_, _, _), Player, e, ((Player, X1, Y1), (1, X2, Y2))).
 
 choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),

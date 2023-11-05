@@ -11,12 +11,12 @@ initial_state((N, M), (1, [], Board)) :-
     setInitialPieces(N, M, Board2, Board).
 
 
-gameLoop(GameState, PlayerType, GameMode, N, M) :-
+gameLoop(GameState, _, _) :-
     gameOver(GameState, Winner), !,
     write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl, nl.
 
 
-gameLoop(GameState, PlayerType, GameMode, N, M) :-
+gameLoop(GameState, PlayerType, GameMode) :-
     choosePiece(GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     greenOrBlue(GameState, Player),
@@ -27,7 +27,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     display_game(NewGameState2),
-    gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
+    gameLoop(NewGameState2, NewPlayerType, GameMode), !.
 
 changePlayerType(p, p, p-p).
 changePlayerType(p, Level, p-Level).

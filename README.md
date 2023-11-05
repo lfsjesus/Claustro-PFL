@@ -115,7 +115,7 @@ This procedure shall be repeated until one of the following conditions is met:
 
 
 Game Loop
-The gameLoop/4 predicate is the heart of the game logic, where the actual gameplay occurs. This recursive predicate handles the sequence of events in the game:
+The gameLoop/3 predicate is the heart of the game logic, where the actual gameplay occurs. This recursive predicate handles the sequence of events in the game:
 
 Game Over Check: The predicate first checks if the game has ended by calling gameOver/2. If the game is over, it announces the winner and ends the recursion.
 Piece Selection: It asks the current player (human or AI) to choose a piece with choosePiece/5.
