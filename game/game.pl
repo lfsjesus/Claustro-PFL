@@ -2,7 +2,7 @@
 
 gameInit(N, M, P1-P2, FirstPlayer) :-
     initial_state((N, M), GameState),
-    displayGame(GameState),
+    display_game(GameState),
     gameLoop(GameState, FirstPlayer, P1-P2, N, M).
 
 initial_state((N, M), (1, [], Board)) :-
@@ -33,7 +33,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     move(NewGameState, Move, NewGameState1),
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
-    displayGame(NewGameState2),
+    display_game(NewGameState2),
     printMoveHistory(NewGameState2),
     gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
 

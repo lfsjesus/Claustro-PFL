@@ -1,10 +1,10 @@
 /* Here we will define predicates to print the board */
 
 /**
-* displayGame(+GameState)
+* display_game(+GameState)
 *
 **/
-displayGame((_, _, Board)) :- 
+display_game((_, _, Board)) :- 
     getBoardSize(Board, N, M),
     clear,
     displayCols(N),
