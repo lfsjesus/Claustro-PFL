@@ -27,7 +27,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     greenOrBlue(GameState, Player),
-    chooseMove(Player, GameState, PlayerType, Move),
+    choose_move(GameState, Player, PlayerType, Move),
     askReplacePosition(PlayerType, Move, Move1, GameState),
     move(GameState, Move1, NewGameState),
     move(NewGameState, Move, NewGameState1),

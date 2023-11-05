@@ -2,14 +2,15 @@
 odd(N) :- 
     N mod 2 =:= 1.
 
+greenOrBlue((Turn, _, _), Player) :-
+    greenOrBlue(Turn, Player).
+
 greenOrBlue(Turn, green) :-
     odd(Turn).
 
 greenOrBlue(Turn, blue) :-
     \+odd(Turn).
 
-greenOrBlue((Turn, _, _), Player) :-
-    greenOrBlue(Turn, Player).
 
 
 % Define opponents and move directions for each color
