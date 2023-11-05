@@ -18,17 +18,16 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     %trace,
-    valid_moves(GameState, Player, ListOfMoves),
+    %valid_moves(GameState, Player, ListOfMoves),
     %printList((_, _, ListOfMoves)),
     %furthestPosition(Player, GameState, X, Y),
     %write('Furthest empty is at '), write(X), write(', '), write(Y), nl,
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
-    chooseMove(N, M, GameState, PlayerType, Piece, Move),
-
-    askReplacePosition(PlayerType, Move, Piece1, Move1, GameState),
-    move(GameState, Piece1, Move1, NewGameState),
-    move(NewGameState, Piece, Move, NewGameState1),
+    chooseMove(N, M, GameState, PlayerType, Move),
+    askReplacePosition(PlayerType, Move, Move1, GameState),
+    move(GameState, Move1, NewGameState),
+    move(NewGameState, Move, NewGameState1),
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     displayGame(NewGameState2),

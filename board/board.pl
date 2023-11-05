@@ -114,16 +114,16 @@ move((Turn, MoveHistory, Board), Piece, (1, X, Y), (NewTurn, NewMoveHistory, New
     append(MoveHistory, [(1, X, Y)], NewMoveHistory).
 */
 
-move(GameState, _, null, GameState).
+move(GameState, null, GameState).
 
-move((Turn, MoveHistory, Board), Piece, Move, (Turn, NewMoveHistory, NewBoard)) :-
-    movePiece(Piece, Move, Board, NewBoard),
+move((Turn, MoveHistory, Board), Move, (Turn, NewMoveHistory, NewBoard)) :-
+    movePiece(Move, Board, NewBoard),
     append(MoveHistory, [(0, X, Y)], NewMoveHistory). % NEED TO THINK ABOUT THIS SINCE REPLACEMENTS ARE GONNA COUNT AS MOVES
 
 changeTurn((Turn, MoveHistory, Board), (NewTurn, MoveHistory, Board)) :-
     NewTurn is Turn + 1.
 
-movePiece((Color, X1, Y1), (_, X2, Y2), Board, NewBoard) :-
+movePiece(((Color, X1, Y1), (_, X2, Y2)), Board, NewBoard) :-
     change_cell(Board, Y1, X1, empty, Board1),
     change_cell(Board1, Y2, X2, Color, NewBoard).
 

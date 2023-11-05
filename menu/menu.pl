@@ -18,6 +18,7 @@ mainMenu :-
     
     readInputBetween(0, 4, Num),
     execMenuChoice(Num).
+                                                                  
 
 
 /**
@@ -64,7 +65,7 @@ askWhoStarts(p-h, FirstPlayer) :-
     readInputBetween(0, 1, Num),
     mapPlayer(Num, FirstPlayer, p-h).  
 
-askWhoStarts(_, _). 
+askWhoStarts(P1-P2, P1). % botVsBot
 
 setGame(Mode) :-
     clear,

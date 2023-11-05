@@ -6,23 +6,23 @@ clear :- write('\e[2J').
 
 /****MENU IO****/
 menuH1(Title) :-
-    format('~n~`*t ~p ~`*t~75|~n', [Title]).
+    format('~n~`-t ~p ~`-t~75|~n', [Title]).
 
 menuString(String) :-
-    format('*~t~p~t*~75|~n', [String]).    
+    format('-~t~p~t-~75|~n', [String]).    
 
 menuHeaders(Options, Descriptions) :-
-    format('*~t~p~t~37+~t~p~t~37+~t*~75|~n', [Options, Descriptions]).
+    format('-~t~p~t~37+~t~p~t~37+~t-~75|~n', [Options, Descriptions]).
 
 menunl :-
-    format('*~t*~75|~n', []).
+    format('-~t-~75|~n', []).
 
 
 menuChoice(Option, Description) :-
-    format('*~t~p~t~37|~t~p~t~37+~t*~75|~n', [Option, Description]).
+    format('-~t~p~t~37|~t~p~t~37+~t-~75|~n', [Option, Description]).
 
 menuFill :-
-    format('~`*t~75|~n', []).
+    format('~`-t~75|~n', []).
 
 
 readNumber(X) :- readNumber(X, 0).

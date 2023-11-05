@@ -27,11 +27,12 @@ printTurn(Turn) :-
     greenOrBlue(Turn, Color),
     format('   *** ~p TURN *** ~n.', [Color]).
 
-chooseMoveType((_, _, Board), p, Piece, (MoveType, _, _)) :-
+% Move: ((Color, X1, Y1), (MoveType, X2, Y2))
+chooseMoveType((_, _, Board), p, Piece, (Piece, (MoveType, _, _))) :-
     askMoveType(p, Piece, Board, MoveType).
 
 % easy bot move type does nothing. he chooses a random move despite the type.
-chooseMoveType((Turn, _, Board), e, Piece, Move).
+chooseMoveType((Turn, _, Board), e, Piece, (Piece, _)).
 
 
 
@@ -65,9 +66,10 @@ askBoardPosition(X, Y, N, M) :-
     readInputBetween(1, M, Y), nl, nl.
 
 
-askReplacePosition(_, (0, _, _), _, null, _). % if move type is 0, there is no captured piece
+askReplacePosition(_, (_,(0, _, _)), null, _). % if move type is 0, there is no captured piece
 
-askReplacePosition(p, (1, X, Y), (Color, X, Y), (MoveType, X2, Y2), (_, _, Board)) :-
+% move: ((Color, X1, Y1), (MoveType, X2, Y2))
+askReplacePosition(p, (_, (1, X, Y)), ((Color, X, Y), (MoveType, X2, Y2)), (_, _, Board)) :-
     repeat,
     nl,
     write('CHOOSE A POSITION TO PLACE THE CAPTURED PIECE:'), nl, nl,
@@ -78,7 +80,7 @@ askReplacePosition(p, (1, X, Y), (Color, X, Y), (MoveType, X2, Y2), (_, _, Board
     MoveType is 0,
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X, Y, X2, Y2]).
 
-askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board)) :-
+askReplacePosition(e, (_, (1, X, Y)), ((Color, X, Y), (MoveType, X1, Y1)), (_, _, Board)) :-
     checkSquareType(X, Y, Color, Board),
     getBoardSize(Board, N, M),
     random(1, N, X1),
@@ -89,7 +91,7 @@ askReplacePosition(e, (1, X, Y), (Color, X, Y), (MoveType, X1, Y1), (_, _, Board
     write(' Bot is now on position: '), write((X, Y)), nl, nl,
     pressEnterToContinue.
 
-chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (0, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (0, X2, Y2))) :-
     repeat,
     nl,
     write('CHOOSE A MOVE:'), nl, nl,
@@ -98,7 +100,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (0, X2, Y2)) :-
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X1, Y1, X2, Y2]).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (1, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (1, X2, Y2))) :-
     repeat,
     nl,
     write('CHOOSE A PIECE TO CAPTURE:'), nl, nl,
@@ -106,7 +108,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), p, (Color, X1, Y1), (1, X2, Y2)) :-
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (0, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (0, X2, Y2))) :-
     greenOrBlue(Turn, Color),
     valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
     random_member((0, X2, Y2), ListOfMoves),
@@ -114,7 +116,7 @@ chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (0, X2, Y2)) :-
     pressEnterToContinue.
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, (Color, X1, Y1), (1, X2, Y2)) :-
+chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (1, X2, Y2))) :-
     greenOrBlue(Turn, Color),
     valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
     random_member((1, X2, Y2), ListOfMoves).
