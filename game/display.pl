@@ -6,7 +6,7 @@
 **/
 displayGame((_, _, Board)) :- 
     getBoardSize(Board, N, M),
-    clear,
+    %clear,
     displayCols(N),
 
     displayBoard(Board, M, N).

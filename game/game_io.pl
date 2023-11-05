@@ -48,16 +48,17 @@ choosePiece(N, M, (Turn, MoveHistory, Board), p, (Color, X, Y)) :-
     pieceNotStuck((Color, X, Y), Board). % if piece is stuck, ask again
     format('   You chose (~p, ~p). ~n.', [X, Y]).
 
-choosePiece(N, M, (Turn, _, Board), e, Piece) :-
-    greenOrBlue(Turn, Color),
-    piecesOf(Color, Board, ListOfPieces),
-    randomPiece(ListOfPieces, Board, Piece).
 
 
 randomPiece(ListOfPieces, Board, Piece) :-
     random_member(Piece, ListOfPieces),
     pieceNotStuck(Piece, Board).
 
+
+choosePiece(N, M, (Turn, _, Board), e, Piece) :-
+    greenOrBlue(Turn, Color),
+    piecesOf(Color, Board, ListOfPieces),
+    randomPiece(ListOfPieces, Board, Piece).
 
 askBoardPosition(X, Y, N, M) :-
     write('--- X coordinate: ---'), nl,
@@ -80,14 +81,14 @@ askReplacePosition(p, (_, (1, X, Y)), ((Color, X, Y), (MoveType, X2, Y2)), (_, _
     MoveType is 0,
     format('  SUCCESS: You moved (~p, ~p) to (~p, ~p). ~n', [X, Y, X2, Y2]).
 
-askReplacePosition(e, (_, (1, X, Y)), ((Color, X, Y), (MoveType, X1, Y1)), (_, _, Board)) :-
-    checkSquareType(X, Y, Color, Board),
+askReplacePosition(e, ((MyColor, _, _), (1, X, Y)), ((Color, X, Y), (MoveType, X1, Y1)), (_, _, Board)) :-
+    checkSquareType(X, Y, Color, Board), % color of captured piece
     getBoardSize(Board, N, M),
     random(1, N, X1),
     random(1, M, Y1),
     checkSquareType(X1, Y1, empty, Board),
     MoveType is 0,
-    write(' Bot moved the captured piece to the position: '), write((X1, Y1)), nl, nl,
+    write(' Bot '), write(MyColor), write(' moved the captured piece to the position: '), write((X1, Y1)), nl, nl,
     write(' Bot is now on position: '), write((X, Y)), nl, nl,
     pressEnterToContinue.
 
@@ -108,19 +109,19 @@ chooseMove(N, M, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (1, X2, Y2))) 
     canCapture(Color, X1, Y1, X2, Y2, Board).
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (0, X2, Y2))) :-
-    greenOrBlue(Turn, Color),
+chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (MoveType, X2, Y2))) :-
+    var(MoveType),
     valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
-    random_member((0, X2, Y2), ListOfMoves),
-    format('  ~nBot moved (~p, ~p) to (~p, ~p). ~n~n', [X1, Y1, X2, Y2]),
+    random_member((MoveType, X2, Y2), ListOfMoves), !,
+    chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (MoveType, X2, Y2))).
+
+chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (0, X2, Y2))) :-
+    format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Color, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-
 chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (1, X2, Y2))) :-
-    greenOrBlue(Turn, Color),
-    valid_moves_piece((Turn, _, Board), (Color, X1, Y1), ListOfMoves),
-    random_member((1, X2, Y2), ListOfMoves).
-
+    write(ListOfMoves), nl,
+    write("Choice: "), write((1, X2, Y2)), nl.
 
 pressEnterToContinue :-
     write(' Press [ENTER] to continue...'), nl,
