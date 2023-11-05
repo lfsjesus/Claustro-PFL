@@ -106,7 +106,7 @@ askReplacePosition(h, ((MyColor, _, _), (1, X, Y)), ((OpponentColor, X, Y), (Mov
     pressEnterToContinue.
 
 
-chooseMove(N, M, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (0, X2, Y2))) :-
+choose_move(Player, (Turn, MoveHistory, Board), p, ((Color, X1, Y1), (0, X2, Y2))) :-
     repeat,
     nl,
     write('CHOOSE A MOVE:'), nl, nl,
@@ -134,21 +134,6 @@ chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (0, X2, Y2))) 
     pressEnterToContinue.
 
 chooseMove(N, M, (Turn, MoveHistory, Board), e, ((Color, X1, Y1), (1, X2, Y2))).
-
-pressEnterToContinue :-
-    write(' Press [ENTER] to continue...'), nl,
-    get_char(_).    
-
-
-testMove((Turn, _, Board), (Color, X1, Y1), (0, X2, Y2), (Turn, _, NewBoard)) :-
-    move((Turn, _, Board), ((Color, X1, Y1), (MoveType, X2, Y2)), (_, _, NewBoard)).
-
-testMove((Turn, _, Board), (Color, X1, Y1), (1, X2, Y2), (Turn, _, NewBoard2)) :-
-    opponent(Color, OpponentColor),
-    furthestPosition(OpponentColor, (Turn, _, Board), Xempty, Yempty),
-    move((Turn, _, Board), ((Opponent, X2, Y2), (0, Xempty, Yempty)), (_, _, NewBoard1)),
-    move((Turn, _, NewBoard1), ((Color, X1, Y1), (0, X2, Y2)), (_, _, NewBoard2)).
-
 
 chooseMove(N, M, (Turn, MoveHistory, Board), h, ((Color, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),

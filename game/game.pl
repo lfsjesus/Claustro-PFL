@@ -26,7 +26,8 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     %write('Most valuable move is '), write(MoveType), write(' from '), write(X1), write(', '), write(Y1), write(' to '), write(X2), write(', '), write(Y2), nl,
     choosePiece(N, M, GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
-    chooseMove(N, M, GameState, PlayerType, Move),
+    greenOrBlue(GameState, Player),
+    chooseMove(Player, GameState, PlayerType, Move),
     askReplacePosition(PlayerType, Move, Move1, GameState),
     move(GameState, Move1, NewGameState),
     move(NewGameState, Move, NewGameState1),
@@ -44,17 +45,6 @@ changePlayerType(p, Level, p-Level).
 changePlayerType(Level, p, p-Level).
 changePlayerType(Level1, Level2, Level1-Level2).
 changePlayerType(Level1, Level2, Level2-Level1).
-
-odd(N) :- 
-    N mod 2 =:= 1.
-
-greenOrBlue(Turn, green) :-
-    odd(Turn).
-
-greenOrBlue(Turn, blue) :-
-    \+odd(Turn).
-
-
 
 /*
 % initial_state(+N, +M, -GameState)

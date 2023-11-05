@@ -118,7 +118,14 @@ movePiece(((Color, X1, Y1), (_, X2, Y2)), Board, NewBoard) :-
     change_cell(Board, Y1, X1, empty, Board1),
     change_cell(Board1, Y2, X2, Color, NewBoard).
 
+testMove((Turn, _, Board), (Color, X1, Y1), (0, X2, Y2), (Turn, _, NewBoard)) :-
+    move((Turn, _, Board), ((Color, X1, Y1), (MoveType, X2, Y2)), (_, _, NewBoard)).
 
+testMove((Turn, _, Board), (Color, X1, Y1), (1, X2, Y2), (Turn, _, NewBoard2)) :-
+    opponent(Color, OpponentColor),
+    furthestPosition(OpponentColor, (Turn, _, Board), Xempty, Yempty),
+    move((Turn, _, Board), ((Opponent, X2, Y2), (0, Xempty, Yempty)), (_, _, NewBoard1)),
+    move((Turn, _, NewBoard1), ((Color, X1, Y1), (0, X2, Y2)), (_, _, NewBoard2)).
 
 
 

@@ -46,3 +46,7 @@ readInputBetween(Min, Max, Input) :-
 readInputBetween(Min, Max, Input) :-
     format('Invalid input. Please select an option between ~d and ~d.~n', [Min, Max]),
     readInputBetween(Min, Max, Input).
+
+pressEnterToContinue :-
+    write(' Press [ENTER] to continue...'), nl,
+    get_char(_).    
