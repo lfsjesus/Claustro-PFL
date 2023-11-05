@@ -175,7 +175,8 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
         PositionsDistancesPairs
     ),
     keysort(PositionsDistancesPairs, SortedPairs),
-    last(SortedPairs, _-((X, Y))).
+    sort(SortedPairs, SortedPairs2), % remove duplicates
+    last(SortedPairs2, _-((X, Y))).
 
 
 moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score) :-
@@ -223,5 +224,8 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
         ListOfMoves1
     ),
     append(ListOfMoves1, ListOfMoves0, ListOfMoves2),
-    keysort(ListOfMoves2, SortedMoves),
-    nth1(1, SortedMoves, _-((Player, X1, Y1), (MoveType, X2, Y2))).
+    keysort(ListOfMoves2, SortedMoves), % sort by score
+    sort(SortedMoves, ListOfMoves), % remove duplicates
+    last(SortedMoves, _-((Player, X1, Y1), (MoveType, X2, Y2))).
+
+    
