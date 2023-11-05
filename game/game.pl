@@ -5,7 +5,7 @@ gameInit(N, M, P1-P2, FirstPlayer) :-
     displayGame(GameState),
     gameLoop(GameState, FirstPlayer, P1-P2, N, M).
 
-initial_state((N, M), (1, MoveHistory, Board)) :-
+initial_state((N, M), (1, [], Board)) :-
     setBoard(N, M, Board1),
     setSpecialSquares(N, M, Board1, Board2),
     setInitialPieces(N, M, Board2, Board).
@@ -33,8 +33,11 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
     changeTurn(NewGameState1, NewGameState2),
     changePlayerType(PlayerType, NewPlayerType, GameMode),
     displayGame(NewGameState2),
+    printMoveHistory(NewGameState2),
     gameLoop(NewGameState2, NewPlayerType, GameMode, N, M), !.
 
+printMoveHistory((_, MoveHistory, _)) :-
+    write(MoveHistory), nl.
 
 changePlayerType(p, p, p-p).
 changePlayerType(p, Level, p-Level).
