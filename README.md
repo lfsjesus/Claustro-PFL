@@ -142,9 +142,54 @@ Recursion: The predicate calls itself recursively to continue the game loop, pas
 - `askMoveType/4`: Asks the user to select a move type, validating the move based on the game state.
 - `choosePiece/5`: Allows the player to choose a piece to move, with the system handling both human and bot players.
 - `askBoardPosition/4`: Prompts for a board position to move the piece and ensures the input is within the allowed range.
-- `askReplacePosition/4`: In the event of a capture, this allows the user or bot to choose where to place the captured piece.
+- `askReplacePosition/4`: In the event of a capture, this allows the user or bot to choose where to place the captured piece (must be an empty square).
 - `choose_move/4:` The process of selecting a move during the game, handling different phases such as move execution, capture, and automated move selection based on the player type (human or bot).
 
 
+
+## Move Validation and Execution
+
+- The predicate responsible for move execution is `move/3`, taking the current game state and a proposed move, produces a new game state that reflects the move. However, the proposed move is validated before calling `move/3` while asking for user inputs as explained before or choosing random moves for the easy bot.
+
+### Move Validation
+- Before executing a move, it is validated using a set of rules defined for the game. These include:
+
+ - **Movement:** A piece can move ortogonally in the direction of the playerGoal to an adjacent square if it is empty or to a goal square.
+
+ - **Capture:** A piece can capture an opponent's piece if the opponent's piece is placed in an adjacent diagonal square.
+
+ - **Game Over Conditions:**  The Game Over Conditions are checked in the gameloop after a move is executed. These conditions would end the game, such as reaching the opponent's goal line and having no valid moves available or both players making the same move 3 times in a row.
+
+### Execution of Move
+- #### Once a move has been validated, the move/3 predicate will:
+  - Update the board to reflect the piece's new position.
+  - Capture any opponent pieces if the move is a capturing move.
+  - Update any state information that is dependent on the move, such as the turn number or scoring.
+  - Return the new game state.
+
+ ### Helpers and Utilities:
+- Several helper predicates are used in conjunction with move/3:
+  - `canMove/6` and `canCapture/6` for checking the validity of non-capturing and capturing moves, respectively.
+  - `valid_move/3` and `valid_moves/3` for finding all valid moves for a piece or player.
+  - `gameOver/2` for checking if a game-ending condition has been reached.
+  - `change_cell/5` for modifying the board state by changing the value of a specified cell.
+
+
+### Greedy Bot Behavior
+
+`mostValueableMove/3`
+- Selects the move with the highest score for the current player's piece based on move value calculations.
+
+ `value/3`
+- Evaluates the game state value from the perspective of `Player`, calculating the score based on the distance of all pieces from the goal.
+
+`choose_move/4`
+- Chooses and executes the best move based on a heuristic for the greedy bot. 
+      
+      0,9 * (1/Distance_from_Goal) + 0,1 * Can_Capture
+
+- It uses the `mostValueableMove` predicate to select the best move and the `value` predicate to calculate the score before and after a potential move.
+- The greedy bot picks the move that maximizes its position advantage, comparing the current score with the potential new score after the move.
+- If the new game state score is greater than or equal to the current score, it chooses that move.
 
 
