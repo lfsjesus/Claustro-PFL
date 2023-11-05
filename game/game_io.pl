@@ -3,21 +3,21 @@
 moveTypeChoice(Option, Description) :-
     format('   [ ~p ] ~p ~n', [Option, Description]).
 
-askMoveType(PlayerType, Piece, Board, Num) :-
-    valid_move(Piece, (0, X2, Y2), Board),
-    valid_move(Piece, (1, X3, Y3), Board), !,
+askMoveType(Piece, Board, Num) :-
+    valid_move(Piece, (0, _, _), Board),
+    valid_move(Piece, (1, _, _), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl,
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
     readInputBetween(0, 1, Num).
 
-askMoveType(PlayerType, Piece, Board, Num) :-
+askMoveType(Piece, Board, Num) :-
     valid_move(Piece, (0, X2, Y2), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl, nl,
     readInputBetween(0, 0, Num).
 
-askMoveType(PlayerType, Piece, Board, Num) :-
+askMoveType(Piece, Board, Num) :-
     valid_move(Piece, (1, X2, Y2), Board), !,
     nl, nl,
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
