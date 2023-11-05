@@ -114,9 +114,9 @@ gameOver((_, MoveHistory, _), Player) :-
 
 
 checkSameMoves(UserMoves) :-
-    nth1(1, MoveHistory, ((_, X, Y), (_, X1, Y1))),
-    nth1(2, MoveHistory, ((_, X2, Y2), (_, X3, Y3))),
-    nth1(3, MoveHistory, ((_, X4, Y4), (_, X5, Y5))),
+    nth1(1, UserMoves, ((_, X, Y), (_, X1, Y1))),
+    nth1(2, UserMoves, ((_, X2, Y2), (_, X3, Y3))),
+    nth1(3, UserMoves, ((_, X4, Y4), (_, X5, Y5))),
 
     XDir1 is X1 - X,
     YDir1 is Y1 - Y,
@@ -132,27 +132,6 @@ checkSameMoves(UserMoves) :-
 
     YDir1 =:= YDir2,
     YDir2 =:= YDir3.
-
-
-
-    
-
-
-
-
-
-
-    
-
-
-
-
-
-((Color, X, Y), (MoveType, X1, Y1))
-
-checkMovesDifferent((_, X, Y), (_, X1, Y1)) :-
-    XDir is X1 - X,
-    YDir is Y1 - Y,
 
 
 piecesOf(Player, Board, ListOfPieces) :-
