@@ -38,6 +38,12 @@ chooseMoveType((_, _, _), e, Piece, (Piece, _)).
 chooseMoveType((_, _, _), h, _, _).
 
 
+
+randomPiece(ListOfPieces, Board, Piece) :-
+    random_member(Piece, ListOfPieces),
+    pieceNotStuck(Piece, Board).
+
+
 % in this case, piece is output
 choosePiece((Turn, _, Board), p, (Color, X, Y)) :-
     repeat,
@@ -49,13 +55,6 @@ choosePiece((Turn, _, Board), p, (Color, X, Y)) :-
     askBoardPosition(X, Y, N, M),
     checkSquareType(X, Y, Color, Board),
     pieceNotStuck((Color, X, Y), Board). % if piece is stuck, ask again
-    format('   You chose (~p, ~p). ~n.', [X, Y]).
-
-
-
-randomPiece(ListOfPieces, Board, Piece) :-
-    random_member(Piece, ListOfPieces),
-    pieceNotStuck(Piece, Board).
 
 
 choosePiece((Turn, _, Board), e, Piece) :-
@@ -136,7 +135,7 @@ choose_move((_, _, _), Player, e, ((Player, X1, Y1), (0, X2, Y2))) :-
     format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Player, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-choose_move((_, _, _), Player, e, ((Player, X1, Y1), (1, X2, Y2))).
+choose_move((_, _, _), Player, e, ((Player, _, _), (1, _, _))).
 
 choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),
@@ -148,10 +147,10 @@ choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType,
     GameStateScore >= 0,
     choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))).
 
-choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (0, X2, Y2))) :-
+choose_move((_, _, _), Player, h, ((Player, X1, Y1), (0, X2, Y2))) :-
     format('  ~nBot ~p moved (~p, ~p) to (~p, ~p). ~n~n', [Player, X1, Y1, X2, Y2]),
     pressEnterToContinue.
 
-choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (1, X2, Y2))).
+choose_move((_, _, _), Player, h, ((Player, _, _), (1, _, _))).
 
 

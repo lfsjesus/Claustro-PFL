@@ -29,7 +29,6 @@ greenOrBlue(Turn, blue) :-
     \+odd(Turn).
 
 
-% Define opponents and move directions for each color
 opponent(blue, green).
 opponent(green, blue).
 
