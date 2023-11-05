@@ -91,11 +91,15 @@ gameOver((_, _, Board), green) :-
 
 gameOver((Turn, _, Board), blue) :- 
     valid_moves((Turn, _, Board), blue, ListOfMoves),
-    length(ListOfMoves, 0).
+    length(ListOfMoves, 0),
+    nl,
+    write('No more moves for blue!'), nl.
 
 gameOver((Turn, _, Board), green) :-
     valid_moves((Turn, _, Board), green, ListOfMoves),
-    length(ListOfMoves, 0).
+    length(ListOfMoves, 0),
+    nl,
+    write('No more moves for green!'), nl.
 
 
 gameOver((_, MoveHistory, _), Player) :-
@@ -104,7 +108,9 @@ gameOver((_, MoveHistory, _), Player) :-
     getLastMoveHistory(MoveHistory, GreenMoves, BlueMoves),
     checkSameMoves(GreenMoves),
     checkSameMoves(BlueMoves),
-    nth1(1, MoveHistory, ((Player, _, _), (_, _, _))).  
+    nth1(1, MoveHistory, ((Player, _, _), (_, _, _))),
+    nl,
+    write('Same moves 3 times in a row! The last player that moved wins!'), nl.
 
 
 checkSameMoves(UserMoves) :-

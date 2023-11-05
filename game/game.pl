@@ -13,7 +13,7 @@ initial_state((N, M), (1, [], Board)) :-
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
     gameOver(GameState, Winner), !,
-    write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl.
+    write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl, nl.
 
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
