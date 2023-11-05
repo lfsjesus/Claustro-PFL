@@ -1,7 +1,6 @@
 :- use_module(between).
 
 
-
 % Define opponents and move directions for each color
 opponent(blue, green).
 opponent(green, blue).
@@ -151,14 +150,14 @@ distance(X, Y, greenGoal, Board, Distance) :-
     getBoardSize(Board, N, M),
     X_Dist is N - X,
     Y_Dist is Y - 1,
-    Distance is X_Dist + Y_Dist.
+    Distance is X_Dist + Y_Dist + 1.
 
 
 distance(X, Y, blueGoal, Board, Distance) :-
     getBoardSize(Board, N, M),
     X_Dist is X - 1,
     Y_Dist is M - Y,
-    Distance is X_Dist + Y_Dist.
+    Distance is X_Dist + Y_Dist + 1.
 
 %furthest empty square from goal
 furthestPosition(Player, (_,_,Board), X, Y) :-
@@ -185,7 +184,6 @@ moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score) :-
     Distance > 0,
     Score is 1 / Distance.
 
-
 moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
@@ -193,6 +191,7 @@ moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
     DistanceScore is (1 / Distance * 0.7),
     CaptureScore is 0.3,
     Score is DistanceScore + CaptureScore.
+
 
 mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
     greenOrBlue(Turn, Player),
@@ -226,6 +225,53 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
     append(ListOfMoves1, ListOfMoves0, ListOfMoves2),
     keysort(ListOfMoves2, SortedMoves), % sort by score
     sort(SortedMoves, ListOfMoves), % remove duplicates
-    last(SortedMoves, _-((Player, X1, Y1), (MoveType, X2, Y2))).
+    last(ListOfMoves, HighestScore-_),
+    findall(
+        ((Player, X1, Y1), (MoveType, X2, Y2)),
+        (
+            member(Score-((Player, X1, Y1), (MoveType, X2, Y2)), ListOfMoves),
+            Score =:= HighestScore
+        ),
+        BestMoves
+    ),
+    random_member(((Player, X1, Y1), (MoveType, X2, Y2)), BestMoves).
+        
+
+
+
+sum_list([], 0).
+sum_list([Head|Tail], TotalSum) :-
+   sum_list(Tail, SumTail),
+   TotalSum is Head + SumTail.
+
+
+value((Turn, _, Board), Player, Value) :-
+    opponent(Player, Opponent),
+    getBoardSize(Board, N, M),
+    findall(
+        Score,
+        (   
+            between(1, N, X),
+            between(1, M, Y),
+            checkSquareType(X, Y, Player, Board),
+            distance(X, Y, Player, Board, Distance),
+            Score is (1 / Distance) 
+        ),
+        ListOfScores
+    ),
+    piecesOf(Opponent, Board, ListOfOpponentPieces),
+    findall(
+        Score,
+        (   
+            between(1, N, X),
+            between(1, M, Y),
+            checkSquareType(X, Y, Opponent, Board),
+            distance(X, Y, Opponent, Board, Distance),
+            Score is (1 / Distance) * -1 
+        ),
+        ListOfOpponentScores
+    ),
+    append(ListOfScores, ListOfOpponentScores, ListOfAllScores),
+    sum_list(ListOfAllScores, Value).
 
     
