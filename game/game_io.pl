@@ -39,10 +39,11 @@ chooseMoveType((Turn, _, Board), h, _, _).
 
 
 % in this case, piece is output
-choosePiece(N, M, (Turn, MoveHistory, Board), p, (Color, X, Y)) :-
+choosePiece((Turn, MoveHistory, Board), p, (Color, X, Y)) :-
     repeat,
     nl,
     greenOrBlue(Turn, Color),
+    getBoardSize(Board, N, M),
     printTurn(Turn), nl,
     write('CHOOSE A PIECE TO MOVE:'), nl, nl,
     askBoardPosition(X, Y, N, M),
@@ -57,12 +58,12 @@ randomPiece(ListOfPieces, Board, Piece) :-
     pieceNotStuck(Piece, Board).
 
 
-choosePiece(N, M, (Turn, _, Board), e, Piece) :-
+choosePiece((Turn, _, Board), e, Piece) :-
     greenOrBlue(Turn, Color),
     piecesOf(Color, Board, ListOfPieces),
     randomPiece(ListOfPieces, Board, Piece).
 
-choosePiece(N, M, (Turn, _, Board), h, _).
+choosePiece((Turn, _, Board), h, _).
 
 
 askBoardPosition(X, Y, N, M) :-
