@@ -140,7 +140,7 @@ Recursion: The predicate calls itself recursively to continue the game loop, pas
 
 - `moveTypeChoice/2`: Presents the options for moving a piece or capturing a piece.
 - `askMoveType/4`: Asks the user to select a move type, validating the move based on the game state.
-- `choosePiece/5`: Allows the player to choose a piece to move, with the system handling both human and bot players.
+- `choosePiece/3`: Allows the player to choose a piece to move, with the system handling both human and bot players.
 - `askBoardPosition/4`: Prompts for a board position to move the piece and ensures the input is within the allowed range.
 - `askReplacePosition/4`: In the event of a capture, this allows the user or bot to choose where to place the captured piece.
 - `choose_move/4:` The process of selecting a move during the game, handling different phases such as move execution, capture, and automated move selection based on the player type (human or bot).

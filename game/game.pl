@@ -17,14 +17,7 @@ gameLoop(GameState, PlayerType, GameMode, N, M) :-
 
 
 gameLoop(GameState, PlayerType, GameMode, N, M) :-
-    %valid_moves(GameState, Player, ListOfMoves),
-    %printList((_, _, ListOfMoves)),
-    %opponent(Player, Opponent),
-    %furthestPosition(Opponent, GameState, X, Y),
-    %write('Furthest empty is at '), write(X), write(', '), write(Y), nl,
-    %mostValueableMove(GameState, (Player, X1, Y1), (MoveType, X2,Y2)),
-    %write('Most valuable move is '), write(MoveType), write(' from '), write(X1), write(', '), write(Y1), write(' to '), write(X2), write(', '), write(Y2), nl,
-    choosePiece(N, M, GameState, PlayerType, Piece),
+    choosePiece(GameState, PlayerType, Piece),
     chooseMoveType(GameState, PlayerType, Piece, Move),
     greenOrBlue(GameState, Player),
     choose_move(GameState, Player, PlayerType, Move),
