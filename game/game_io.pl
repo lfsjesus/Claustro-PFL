@@ -4,21 +4,21 @@ moveTypeChoice(Option, Description) :-
     format('   [ ~p ] ~p ~n', [Option, Description]).
 
 askMoveType(Piece, Board, Num) :-
-    valid_move(Piece, (0, _, _), Board),
-    valid_move(Piece, (1, _, _), Board), !,
+    valid_move((Piece, (0, _, _)), Board),
+    valid_move((Piece, (1, _, _)), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl,
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
     readInputBetween(0, 1, Num).
 
 askMoveType(Piece, Board, Num) :-
-    valid_move(Piece, (0, _, _), Board), !,
+    valid_move((Piece, (0, _, _)), Board), !,
     nl, nl,
     moveTypeChoice(0, 'Move this piece'), nl, nl,
     readInputBetween(0, 0, Num).
 
 askMoveType(Piece, Board, Num) :-
-    valid_move(Piece, (1, _, _), Board), !,
+    valid_move((Piece, (1, _, _)), Board), !,
     nl, nl,
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
     readInputBetween(1, 1, Num).
@@ -29,7 +29,7 @@ printTurn(Turn) :-
 
 % Move: ((Color, X1, Y1), (MoveType, X2, Y2))
 chooseMoveType((_, _, Board), p, Piece, (Piece, (MoveType, _, _))) :-
-    askMoveType(p, Piece, Board, MoveType).
+    askMoveType(Piece, Board, MoveType).
 
 % easy bot move type does nothing. he chooses a random move despite the type.
 chooseMoveType((_, _, _), e, Piece, (Piece, _)).
@@ -140,7 +140,7 @@ choose_move((_, _, _), Player, e, ((Player, _, _), (1, _, _))).
 choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),
     value((Turn, _, Board), Player, CurrentScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
-    mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)), !,
+    mostValueableMove((Turn, _, Board), ((Player, X1, Y1), (MoveType, X2, Y2))), !,
     testMove((Turn,_, Board), (Player, X1, Y1), (MoveType, X2, Y2), (Turn,_, NewBoard)),
     value((Turn, _, NewBoard), Player, NewScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
     GameStateScore is NewScore - CurrentScore,

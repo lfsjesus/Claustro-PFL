@@ -1,7 +1,13 @@
 
+/* Checks if N is odd.
+*  odd(+N)
+*/
 odd(N) :- 
     N mod 2 =:= 1.
 
+/* Gets N first elements of a list.
+*  takeN(+List, +N, -Result)
+*/
 takeN(_, 0, []).
 takeN([], _, []).
 takeN([X|Xs], N, [X|Ys]) :-
@@ -9,16 +15,25 @@ takeN([X|Xs], N, [X|Ys]) :-
     N1 is N - 1,
     takeN(Xs, N1, Ys).
 
+/* Retrieves elements in even and odd positions of a list.
+*  evenAndOdd(+List, -Even, -Odd)
+*/
 evenAndOdd([], [], []).
 evenAndOdd([O], [O], []).
 evenAndOdd([O, E | Rest], [O | ORest], [E | ERest]) :-
     evenAndOdd(Rest, ORest, ERest).
 
+/* Gets the relevant move history. According to the rules, only the last 3 need to be checked.
+*  getLastMoveHistory(+MoveHistory, -Even, -Odd)
+*/
 getLastMoveHistory(List, Even, Odd) :-
     evenAndOdd(List, Odd1, Even1),
     takeN(Even1, 3, Even),
     takeN(Odd1, 3, Odd).
 
+/* Checks whether it's green's turn or blue's turn according to the turn number.
+*  greenOrBlue(+Turn, -Player)
+*/
 greenOrBlue((Turn, _, _), Player) :-
     greenOrBlue(Turn, Player).
 
@@ -28,58 +43,72 @@ greenOrBlue(Turn, green) :-
 greenOrBlue(Turn, blue) :-
     \+odd(Turn).
 
-
+/* Maps the opponent of a player/color.
+*  opponent(+Player, -Opponent)
+*/
 opponent(blue, green).
 opponent(green, blue).
 
+/* Maps the goal of a player/color.
+*  goal(+Player, -Goal)
+*/ 
 goal(blue, blueGoal).
 goal(green, greenGoal).
 
+/* Defines allowed "regular" move directions for each color/player according to the rules.
+*  move_direction(+Color, -XOffset, -YOffset)
+*/
 move_direction(blue, -1, 0).  % Move to the left
 move_direction(blue, 0, 1).   % Move down
 move_direction(green, 1, 0).  % Move to the right
 move_direction(green, 0, -1). % Move up
 
-% Can move from (X1, Y1) -> (X2, Y2)
-canMove(Color, X1, Y1, X2, Y2, Board) :-
-    move_direction(Color, XOffset, YOffset),
+/* Checks if a piece of a certain player/color can be moved from (X1, Y1) to (X2, Y2).
+*  canMove(+Player, +X1, +Y1, +X2, +Y2, +Board)  
+*/
+canMove(Player, X1, Y1, X2, Y2, Board) :-
+    move_direction(Player, XOffset, YOffset),
     X2 is X1 + XOffset,
     Y2 is Y1 + YOffset,
     checkSquareType(X2, Y2, empty, Board).
 
-% Can move from (X1, Y1) -> (X2, Y2) to a goal square
-canMove(Color, X1, Y1, X2, Y2, Board) :-
-    move_direction(Color, XOffset, YOffset),
+canMove(Player, X1, Y1, X2, Y2, Board) :-
+    move_direction(Player, XOffset, YOffset),
     X2 is X1 + XOffset,
     Y2 is Y1 + YOffset,
-    goal(Color, Goal),
+    goal(Player, Goal),
     checkSquareType(X2, Y2, Goal, Board).
        
 
-% pieceNotStuck(+Piece, +Board)
+/* Check whether a piece is stuck or not, this is, if it can move or capture.
+*  pieceNotStuck(+Move, +Board)
+*/
 pieceNotStuck((Player, X, Y), Board) :-
-    valid_move((Player, X, Y), (_, _, _), Board).
+    valid_move(((Player, X, Y), (_, _, _)), Board).
 
 
-% Define opponents for each color
-opponent(blue, green).
-opponent(green, blue).
+/* Defines allowed capture directions according to the rules. Both players can capture in the same directions.
+*  capture_direction(+XOffset, +YOffset)
+*/
+capture_direction(1, -1).  
+capture_direction(1, 1).
+capture_direction(-1, -1).  
+capture_direction(-1, 1).   
 
-% Define the possible capture directions
-capture_direction(1, -1).  % (X + 1, Y - 1)
-capture_direction(1, 1).  % (X + 1, Y + 1)
-capture_direction(-1, -1).   % (X - 1, Y - 1)
-capture_direction(-1, 1).   % (X - 1, Y + 1)
-
-% Can capture from (X1,Y1) -> (X2,Y2)
-canCapture(Color, X1, Y1, X2, Y2, Board) :-
-    opponent(Color, Opponent),
+/* Checks if a piece of a certain player/color can capture the piece in (X2, Y2).
+*
+*/
+canCapture(Player, X1, Y1, X2, Y2, Board) :-
+    opponent(Player, Opponent),
     capture_direction(XOffset, YOffset),
     X2 is X1 + XOffset,
     Y2 is Y1 + YOffset,
     checkSquareType(X2, Y2, Opponent, Board).
 
-
+/* Checks if the game is over. No tie is possible. 
+*  Check the instructions to understand game over conditions.
+*  gameOver(+GameState, -Winner)
+*/
 gameOver((_, _, Board), blue) :-
     getBoardSize(Board, _, M),
     checkSquareType(1, M, blue, Board).
@@ -100,7 +129,6 @@ gameOver((Turn, _, Board), green) :-
     nl,
     write('No more moves for green!'), nl.
 
-
 gameOver((_, MoveHistory, _), Player) :-
     length(MoveHistory, N),
     N >= 6,
@@ -111,7 +139,9 @@ gameOver((_, MoveHistory, _), Player) :-
     nl,
     write('Same moves 3 times in a row! The last player that moved wins!'), nl.
 
-
+/* Checks if the last 3 user move directions are the same, since it's one of the game over conditions.
+*  checkSameMoves(+UserMoves)
+*/
 checkSameMoves(UserMoves) :-
     nth1(1, UserMoves, ((_, X, Y), (_, X1, Y1))),
     nth1(2, UserMoves, ((_, X2, Y2), (_, X3, Y3))),
@@ -132,7 +162,9 @@ checkSameMoves(UserMoves) :-
     YDir1 =:= YDir2,
     YDir2 =:= YDir3.
 
-
+/* Gets the pieces of a certain player/color in a list.
+*  piecesOf(+Player, +Board, -ListOfPieces)
+*/
 piecesOf(Player, Board, ListOfPieces) :-
     findall(
         (Player, X, Y),
@@ -142,21 +174,25 @@ piecesOf(Player, Board, ListOfPieces) :-
         ListOfPieces
     ).
 
-
-valid_move((Player, X1, Y1), (0, X2, Y2), Board) :- 
+/* Checks if a move/capture (0/1) is valid.
+*  valid_move(+Move, +Board)
+*/
+valid_move(((Player, X1, Y1), (0, X2, Y2)), Board) :- 
     canMove(Player, X1, Y1, X2, Y2, Board).
 
-valid_move((Player, X1, Y1), (1, X2, Y2), Board) :-
+valid_move(((Player, X1, Y1), (1, X2, Y2)), Board) :-
     canCapture(Player, X1, Y1, X2, Y2, Board).
 
-
+/* Gets all valid moves for a player/color in a list.
+*  valid_moves(+GameState, +Player, -ListOfMoves)
+*/
 valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     greenOrBlue(Turn, Player),
     findall(
         ((Player, X1, Y1), (0, X2, Y2)),
         (     
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (0, X2, Y2), Board)
+            valid_move(((Player, X1, Y1), (0, X2, Y2)), Board)
         ),
         ListOfMoves0
     ),
@@ -164,7 +200,7 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
         ((Player, X1, Y1), (1, X2, Y2)),
         (        
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (1, X2, Y2), Board)
+            valid_move(((Player, X1, Y1), (1, X2, Y2)), Board)
         ),
         ListOfMoves1
     ),
@@ -172,14 +208,16 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     sort(ListOfMoves2, ListOfMoves).
 
 
-% valid moves for piece
+/* Gets all valid moves for a piece in a list.
+*  valid_moves_piece(+GameState, +Piece, -ListOfMoves)
+*/
 valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
     greenOrBlue(Turn, Player),
     findall(
         ((0, X2, Y2)),
         (       
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (0, X2, Y2), Board)
+            valid_move(((Player, X1, Y1), (0, X2, Y2)), Board)
         ),
         ListOfMoves0
     ),
@@ -187,13 +225,16 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
         ((1, X2, Y2)),
         (        
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (1, X2, Y2), Board)
+            valid_move(((Player, X1, Y1), (1, X2, Y2)), Board)
         ),
         ListOfMoves1
     ),
     append(ListOfMoves0, ListOfMoves1, ListOfMoves2),
     sort(ListOfMoves2, ListOfMoves).
 
+/* Calculates the distance of a square with X and Y coordinates to a goal (green or blue).
+*
+*/
 distance(X, Y, greenGoal, Board, Distance) :-
     getBoardSize(Board, N, _),
     X_Dist is N - X,
@@ -207,7 +248,9 @@ distance(X, Y, blueGoal, Board, Distance) :-
     Y_Dist is M - Y,
     Distance is X_Dist + Y_Dist + 1.
 
-%furthest empty square from goal
+/* Calculates the square with the furthest distance to a goal (green or blue). For greedy bot.
+*  furthestPosition(+Player, +GameState, -X, -Y)
+*/
 furthestPosition(Player, (_,_,Board), X, Y) :-
     goal(Player, Goal),
     findall(
@@ -232,14 +275,17 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
     random_member((X,Y), BestPositions).
 
 
-
-moveScore((Player, _, _), (0, X2, Y2), Board, Score) :-
+/* Calculates the score of a move. For greedy bot. In case of a normal move, less distance to the goal is better.
+*  If the move is a capture, the score is 0.1 (capture) + 0.9 (distance to goal).
+*  moveScore(+Move, +Board, -Score)
+*/
+moveScore(((Player, _, _), (0, X2, Y2)), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
     Distance > 0,
     Score is 1 / Distance.
 
-moveScore((Player, _, _), (1, X2, Y2), Board, Score) :-
+moveScore(((Player, _, _), (1, X2, Y2)), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
     Distance > 0,
@@ -247,15 +293,17 @@ moveScore((Player, _, _), (1, X2, Y2), Board, Score) :-
     CaptureScore is 0.1,
     Score is DistanceScore + CaptureScore.
 
-
-mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
+/* Returns the most valuable move for a player/color. For greedy bot.
+*  mostValueableMove(+GameState, -Move)
+*/
+mostValueableMove((Turn, _, Board), ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     greenOrBlue(Turn, Player),
     findall(
         Score-((Player, X1, Y1), (0, X2, Y2)),
         (    
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (0, X2, Y2), Board),
-            moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score)
+            valid_move(((Player, X1, Y1), (0, X2, Y2)), Board),
+            moveScore(((Player, X1, Y1), (0, X2, Y2)), Board, Score)
         ),
         ListOfMoves0
     ),
@@ -263,8 +311,8 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
         Score-((Player, X1, Y1), (1, X2, Y2)),
         (        
             checkSquareType(X1, Y1, Player, Board),
-            valid_move((Player, X1, Y1), (1, X2, Y2), Board),
-            moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score)
+            valid_move(((Player, X1, Y1), (1, X2, Y2)), Board),
+            moveScore(((Player, X1, Y1), (1, X2, Y2)), Board, Score)
         ),
         ListOfMoves1
     ),
@@ -284,13 +332,17 @@ mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
         
 
 
-
+/* Performs the sum of a list of numbers.
+*  sum_list(+List, -TotalSum)
+*/
 sum_list([], 0).
 sum_list([Head|Tail], TotalSum) :-
    sum_list(Tail, SumTail),
    TotalSum is Head + SumTail.
 
-
+/* COmputes the value of a board for a player/color. For greedy bot.
+*  value(+GameState, +Player, -Value)
+*/
 value((_, _, Board), Player, Value) :-
     opponent(Player, Opponent),
     findall(

@@ -3,7 +3,7 @@
 gameInit(N, M, P1-P2, FirstPlayer) :-
     initial_state((N, M), GameState),
     display_game(GameState),
-    gameLoop(GameState, FirstPlayer, P1-P2, N, M).
+    gameLoop(GameState, FirstPlayer, P1-P2).
 
 initial_state((N, M), (1, [], Board)) :-
     setBoard(N, M, Board1),
