@@ -1,8 +1,14 @@
 :- use_module(library(random)).
 
+/* Prints a formatted Option/Description pair
+*  moveTypeChoice(+Option, +Description)
+*/
 moveTypeChoice(Option, Description) :-
     format('   [ ~p ] ~p ~n', [Option, Description]).
 
+/* Asks the user to choose a move type. Checks if the move type is valid and only shows the options that are valid.
+*  askMoveType(+Piece, +Board, -Num)
+*/
 askMoveType(Piece, Board, Num) :-
     valid_move((Piece, (0, _, _)), Board),
     valid_move((Piece, (1, _, _)), Board), !,
@@ -23,28 +29,35 @@ askMoveType(Piece, Board, Num) :-
     moveTypeChoice(1, 'Capture a piece'), nl, nl,
     readInputBetween(1, 1, Num).
 
+/* Prints player's turn: green or blue.
+*  printTurn(+Turn)
+*/
 printTurn(Turn) :-
     greenOrBlue(Turn, Color),
     format('   *** ~p TURN *** ~n.', [Color]).
 
-% Move: ((Color, X1, Y1), (MoveType, X2, Y2))
+/* Asks the user to choose a move type. A move is a pair of a piece and a move type, which is an output.
+*  chooseMoveType(+GameState, +Level, +Piece, -Move)
+*/
 chooseMoveType((_, _, Board), p, Piece, (Piece, (MoveType, _, _))) :-
     askMoveType(Piece, Board, MoveType).
 
-% easy bot move type does nothing. he chooses a random move despite the type.
 chooseMoveType((_, _, _), e, Piece, (Piece, _)).
 
-% hard bot move type chooses the most valueable move
 chooseMoveType((_, _, _), h, _, _).
 
 
-
+/* Selects a random piece that is not stuck. For easy bot.
+*  randomPiece(+ListOfPieces, +Board, -Piece)
+*/
 randomPiece(ListOfPieces, Board, Piece) :-
     random_member(Piece, ListOfPieces),
     pieceNotStuck(Piece, Board).
 
 
-% in this case, piece is output
+/* Asks the user to choose a piece to perform an action. Checks if the piece can be chosen (e.g. is not stuck).
+*  choosePiece(+GameState, +Level, -Piece)
+*/
 choosePiece((Turn, _, Board), p, (Color, X, Y)) :-
     repeat,
     nl,
@@ -56,7 +69,6 @@ choosePiece((Turn, _, Board), p, (Color, X, Y)) :-
     checkSquareType(X, Y, Color, Board),
     pieceNotStuck((Color, X, Y), Board). % if piece is stuck, ask again
 
-
 choosePiece((Turn, _, Board), e, Piece) :-
     greenOrBlue(Turn, Color),
     piecesOf(Color, Board, ListOfPieces),
@@ -64,17 +76,20 @@ choosePiece((Turn, _, Board), e, Piece) :-
 
 choosePiece((_, _, _), h, _).
 
-
+/* Asks for a position in the board.
+*  askBoardPosition(-X, -Y, +N, +M)
+*/
 askBoardPosition(X, Y, N, M) :-
     write('--- X coordinate: ---'), nl,
     readInputBetween(1, N, X), nl, nl,
     write('--- Y coordinate: ---'), nl,
     readInputBetween(1, M, Y), nl, nl.
+ 
+/* Asks for replacement position of a captured piece. Returns a null move if the move type is 0.
+*  askReplacePosition(+Level, +Move, -CapturedPieceMove, +GameState)
+*/
+askReplacePosition(_, (_,(0, _, _)), null, _).
 
-
-askReplacePosition(_, (_,(0, _, _)), null, _). % if move type is 0, there is no captured piece
-
-% move: ((Color, X1, Y1), (MoveType, X2, Y2))
 askReplacePosition(p, (_, (1, X, Y)), ((Color, X, Y), (MoveType, X2, Y2)), (_, _, Board)) :-
     repeat,
     nl,
@@ -105,7 +120,10 @@ askReplacePosition(h, ((MyColor, _, _), (1, X, Y)), ((OpponentColor, X, Y), (Mov
     write(' Bot is now on position: '), write((X, Y)), nl, nl,
     pressEnterToContinue.
 
-
+/* Chooses a move. Checks if the move is valid. In case of random bot, it chooses a random move of the selected piece.
+*  Greedy bot chooses the most valuable move.
+*  choose_move(+GameState, +Player, +Level, -Move)
+*/
 choose_move((_, _, Board), Player, p, ((Player, X1, Y1), (0, X2, Y2))) :-
     repeat,
     nl,
@@ -139,10 +157,10 @@ choose_move((_, _, _), Player, e, ((Player, _, _), (1, _, _))).
 
 choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))) :-
     var(MoveType),
-    value((Turn, _, Board), Player, CurrentScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
+    value((Turn, _, Board), Player, CurrentScore), 
     mostValueableMove((Turn, _, Board), ((Player, X1, Y1), (MoveType, X2, Y2))), !,
     testMove((Turn,_, Board), (Player, X1, Y1), (MoveType, X2, Y2), (Turn,_, NewBoard)),
-    value((Turn, _, NewBoard), Player, NewScore), %somar todas as minhas distancias ao golo e subtrarir todas as distancias dos inimigos ao goal deles
+    value((Turn, _, NewBoard), Player, NewScore),
     GameStateScore is NewScore - CurrentScore,
     GameStateScore >= 0,
     choose_move((Turn, MoveHistory, Board), Player, h, ((Player, X1, Y1), (MoveType, X2, Y2))).
