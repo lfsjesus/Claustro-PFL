@@ -35,7 +35,7 @@ getLastMoveHistory(List, Even, Odd) :-
 *  greenOrBlue(+Turn, -Player)
 */
 greenOrBlue((Turn, _, _), Player) :-
-    greenOrBlue(Turn, Player).
+    greenOrBlue(Turn, Player),!.
 
 greenOrBlue(Turn, green) :-
     odd(Turn).

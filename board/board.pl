@@ -134,11 +134,6 @@ move((Turn, MoveHistory, Board), ((Color, X, Y), (MoveType, X1, Y1)), (Turn, New
 move((Turn, MoveHistory, Board), Move, (Turn, MoveHistory, NewBoard)) :-
     movePiece(Move, Board, NewBoard).
 
-/* Changes the turn by incrementing the turn counter. Odd turns are green, even turns are blue.
-*  changeTurn(+GameState, -NewGameState)
-*/ 
-changeTurn((Turn, MoveHistory, Board), (NewTurn, MoveHistory, Board)) :-
-    NewTurn is Turn + 1.
 
 /* Moves a piece on the board. This implies changing the cell to empty and the destination cell to the piece's color.
 *  movePiece(+Move, +Board, -NewBoard)
