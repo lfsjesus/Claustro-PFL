@@ -1,4 +1,6 @@
-# Claustro
+# Claustro - Board Game
+
+**Group:** Claustro_1
 
 Luís Filipe da Silva Jesus - up202108683 - 50%
 <br>
