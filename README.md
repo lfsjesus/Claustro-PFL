@@ -88,6 +88,11 @@ This procedure shall be repeated until one of the following conditions is met:
     [blueGoal, green, green, empty, neutral]
   ]
   ```
+  Below is a visual representation of the initial board state:
+  <p align="center">
+    <img src="assets/initstate.png" width="300" title="Claustro Initial Board">
+    
+  </p>
 
 - **Intermediate State:** Some pieces have been moved from their starting positions.
   ```
@@ -99,6 +104,10 @@ This procedure shall be repeated until one of the following conditions is met:
       [blueGoal, empty, green, empty, neutral]
     ]
     ```
+    Below is a visual representation of the intermediate board state:
+    <p align="center">
+      <img src="assets/interstate.png" width="300" title="Claustro Intermediate Board">
+    </p>
 
 - **Final State:** The game has reached an end condition, like all pieces of one color have been captured. For example `blue` reached `blueGoal`
   ```
@@ -113,6 +122,10 @@ This procedure shall be repeated until one of the following conditions is met:
         |
   (blueGoal position)
     ```
+    Below is a visual representation of the final board state:
+    <p align="center">
+      <img src="assets/finalstate.png" width="300" title="Claustro Final Board">
+    </p>
 
 ## Game State Visualization
 
