@@ -20,7 +20,8 @@ initial_state((N, M), (1, [], Board)) :-
 */
 gameLoop(GameState, _, _) :-
     gameOver(GameState, Winner), !,
-    write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl, nl.
+    write('*^_^* The winner is '), write(Winner), write(' *^_^*'), nl, nl,
+    pressEnterToContinue.
 
 gameLoop(GameState, PlayerType, GameMode) :-
     choosePiece(GameState, PlayerType, Piece),

@@ -1,3 +1,5 @@
+/* Show the instructions for the game.
+*/
 showInstructions :-
     menuString('------------------------ Game Board ------------------------'),
     menunl,

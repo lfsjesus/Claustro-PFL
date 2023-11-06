@@ -1,7 +1,9 @@
 :- consult('menu_display.pl').
 
+/* mainMenu
+*/
 mainMenu :-
-    %repeat, 
+    repeat, 
     clear,
     menuH1('CLAUSTRO'),
     menunl,
@@ -15,29 +17,29 @@ mainMenu :-
     menuChoice(0, 'Exit'),
     menunl,
     menuFill, nl,
-    
     readInputBetween(0, 4, Num),
     execMenuChoice(Num).
                                                                   
 
-
-/**
- *
- * Then process menu choices
- */
-
+/* Process menu choice.
+*  execMenuChoice(+Choice)
+*/
 execMenuChoice(0) :- quitGame.
 execMenuChoice(1) :- setGame(p-p). % playerVsPlayer.
 execMenuChoice(2) :- playerVsBot.
 execMenuChoice(3) :- botVsBot.
 execMenuChoice(4) :- instructions.
 
-% mapPlayer(choice, player, gameMode)
+/* Maps the player choice to the game mode.
+*  mapPlayer(+Num, +Level, -Mode)
+*/
 mapPlayer(0, p, p-p).
 mapPlayer(1, e, p-e).
 mapPlayer(1, h, p-h).
 
-
+/* Ask who starts the game in player vs bot mode.
+*  askWhoStarts(+Mode, -FirstPlayer)
+*/
 askWhoStarts(p-e, FirstPlayer) :- 
     clear,
     menuH1('Who starts?'),
@@ -67,6 +69,9 @@ askWhoStarts(p-h, FirstPlayer) :-
 
 askWhoStarts(P1-_, P1). % botVsBot
 
+/* Sets the game.
+*  setGame(+Mode)
+*/
 setGame(Mode) :-
     clear,
     menuH1('Choose a board size'),
@@ -74,7 +79,6 @@ setGame(Mode) :-
     menuString('Choose width N: '),
     menunl,
     menuFill, nl,
-
     readInputBetween(5, 10, N),
     clear,
     menuH1('Choose a board size'),
@@ -82,11 +86,10 @@ setGame(Mode) :-
     menuString('Choose height M: '),
     menunl,
     menuFill, nl,
-
     readInputBetween(5, 10, M),
     askWhoStarts(Mode, FirstPlayer),
     gameInit(N, M, Mode, FirstPlayer),
-    fail. % If something is failing unexpectedly, CHECK THIS LINE.
+    fail. 
 
 
 /**
@@ -97,7 +100,6 @@ quitGame :-
     menuFill, 
     menuH1('Thanks for playing!'), nl,
     menuFill.
-
 
 playerVsBot :- 
     chooseBotDifficulty('Choose bot difficulty', Choice),
@@ -119,10 +121,15 @@ instructions :-
     skip_line,
     fail.
 
-
+/* Maps the bot difficulty choice to the bot difficulty.
+*  mapBotDifficulty(+Num, -Difficulty)
+*/
 mapBotDifficulty(1, e). % easy
 mapBotDifficulty(2, h). % hard
 
+/* Asks the user to choose the bot difficulty.
+*  chooseBotDifficulty(+Text, -Choice)
+*/
 chooseBotDifficulty(Text, Choice) :-
     clear,
     menuH1('Choose bot difficulty'),

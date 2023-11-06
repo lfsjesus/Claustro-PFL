@@ -1,5 +1,4 @@
 
-/* include files */
 :- consult('menu/menu.pl').
 :- consult('io.pl').
 :- consult('board/board.pl').
@@ -9,4 +8,5 @@
 :- consult('game/game.pl').
 
 
+% Play predicate that starts the game
 play :- mainMenu.
