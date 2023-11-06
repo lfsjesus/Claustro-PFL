@@ -65,7 +65,7 @@ This procedure shall be repeated until one of the following conditions is met:
 
 ## Game Logic
 
-#### Internal Game State Representation:
+## Internal Game State Representation:
 - The main tuple representing the game state is of the form `(Turn, MoveHistory, Board)`:
 
   - Turn: An integer that indicates which player's turn it is. If the number is odd, then it represents the green player's turn.
@@ -113,6 +113,7 @@ This procedure shall be repeated until one of the following conditions is met:
     ```
 
 ## Game State Visualization
+
 - `display_game(+GameState)` is a predicate responsible for visualizing the current game state. It takes the current game state tuple and displays the board and other relevant information to the player. This includes displaying the columns and the pieces on the board using ASCII characters or symbols to represent different pieces.
 
 - The game state visualization makes use of auxiliary predicates such as `displayCols/1, headerBorder/1, and displayBoard/3` to create a user-friendly display of the board. These predicates are designed to be flexible, accommodating boards of various sizes and configurations.
@@ -123,7 +124,7 @@ This procedure shall be repeated until one of the following conditions is met:
 - **Input Validation:** Inside the gameloop, the system prompts the user for input and validates it, ensuring that the moves and selections made are within the acceptable range and logical for the game's current state, according to these predicates:
 
 - `moveTypeChoice/2`: Presents the options for moving a piece or capturing a piece.
-- `askMoveType/4`: Asks the user to select a move type, validating the move based on the game state.
+- `askMoveType/3`: Asks the user to select a move type, validating the move based on the game state.
 - `choosePiece/3`: Allows the player to choose a piece to move, with the system handling both human and bot players.
 - `askBoardPosition/4`: Prompts for a board position to move the piece and ensures the input is within the allowed range.
 - `askReplacePosition/4`: In the event of a capture, this allows the user or bot to choose where to place the captured piece (must be an empty square).

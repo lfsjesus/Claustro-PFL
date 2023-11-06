@@ -29,7 +29,6 @@ greenOrBlue(Turn, blue) :-
     \+odd(Turn).
 
 
-% Define opponents and move directions for each color
 opponent(blue, green).
 opponent(green, blue).
 
@@ -59,7 +58,7 @@ canMove(Color, X1, Y1, X2, Y2, Board) :-
 
 % pieceNotStuck(+Piece, +Board)
 pieceNotStuck((Player, X, Y), Board) :-
-    valid_move((Player, X, Y), (_, X2, Y2), Board).
+    valid_move((Player, X, Y), (_, _, _), Board).
 
 
 % Define opponents for each color
@@ -114,9 +113,9 @@ gameOver((_, MoveHistory, _), Player) :-
 
 
 checkSameMoves(UserMoves) :-
-    nth1(1, MoveHistory, ((_, X, Y), (_, X1, Y1))),
-    nth1(2, MoveHistory, ((_, X2, Y2), (_, X3, Y3))),
-    nth1(3, MoveHistory, ((_, X4, Y4), (_, X5, Y5))),
+    nth1(1, UserMoves, ((_, X, Y), (_, X1, Y1))),
+    nth1(2, UserMoves, ((_, X2, Y2), (_, X3, Y3))),
+    nth1(3, UserMoves, ((_, X4, Y4), (_, X5, Y5))),
 
     XDir1 is X1 - X,
     YDir1 is Y1 - Y,
@@ -134,29 +133,7 @@ checkSameMoves(UserMoves) :-
     YDir2 =:= YDir3.
 
 
-
-    
-
-
-
-
-
-
-    
-
-
-
-
-
-((Color, X, Y), (MoveType, X1, Y1))
-
-checkMovesDifferent((_, X, Y), (_, X1, Y1)) :-
-    XDir is X1 - X,
-    YDir is Y1 - Y,
-
-
 piecesOf(Player, Board, ListOfPieces) :-
-    getBoardSize(Board, N, M),
     findall(
         (Player, X, Y),
         (
@@ -175,7 +152,6 @@ valid_move((Player, X1, Y1), (1, X2, Y2), Board) :-
 
 valid_moves((Turn, _, Board), Player, ListOfMoves) :-
     greenOrBlue(Turn, Player),
-    getBoardSize(Board, N, M),
     findall(
         ((Player, X1, Y1), (0, X2, Y2)),
         (     
@@ -199,7 +175,6 @@ valid_moves((Turn, _, Board), Player, ListOfMoves) :-
 % valid moves for piece
 valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
     greenOrBlue(Turn, Player),
-    getBoardSize(Board, N, M),
     findall(
         ((0, X2, Y2)),
         (       
@@ -220,14 +195,14 @@ valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves) :-
     sort(ListOfMoves2, ListOfMoves).
 
 distance(X, Y, greenGoal, Board, Distance) :-
-    getBoardSize(Board, N, M),
+    getBoardSize(Board, N, _),
     X_Dist is N - X,
     Y_Dist is Y - 1,
     Distance is X_Dist + Y_Dist + 1.
 
 
 distance(X, Y, blueGoal, Board, Distance) :-
-    getBoardSize(Board, N, M),
+    getBoardSize(Board, _, M),
     X_Dist is X - 1,
     Y_Dist is M - Y,
     Distance is X_Dist + Y_Dist + 1.
@@ -235,7 +210,6 @@ distance(X, Y, blueGoal, Board, Distance) :-
 %furthest empty square from goal
 furthestPosition(Player, (_,_,Board), X, Y) :-
     goal(Player, Goal),
-    getBoardSize(Board, N, M),
     findall(
         Distance-(X1,Y1),
         (
@@ -259,13 +233,13 @@ furthestPosition(Player, (_,_,Board), X, Y) :-
 
 
 
-moveScore((Player, X1, Y1), (0, X2, Y2), Board, Score) :-
+moveScore((Player, _, _), (0, X2, Y2), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
     Distance > 0,
     Score is 1 / Distance.
 
-moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
+moveScore((Player, _, _), (1, X2, Y2), Board, Score) :-
     goal(Player, Goal),
     distance(X2, Y2, Goal, Board, Distance),
     Distance > 0,
@@ -276,7 +250,6 @@ moveScore((Player, X1, Y1), (1, X2, Y2), Board, Score) :-
 
 mostValueableMove((Turn, _, Board), (Player, X1, Y1), (MoveType, X2, Y2)) :-
     greenOrBlue(Turn, Player),
-    getBoardSize(Board, N, M),
     findall(
         Score-((Player, X1, Y1), (0, X2, Y2)),
         (    
@@ -318,9 +291,8 @@ sum_list([Head|Tail], TotalSum) :-
    TotalSum is Head + SumTail.
 
 
-value((Turn, _, Board), Player, Value) :-
+value((_, _, Board), Player, Value) :-
     opponent(Player, Opponent),
-    getBoardSize(Board, N, M),
     findall(
         Score,
         (   
@@ -330,7 +302,6 @@ value((Turn, _, Board), Player, Value) :-
         ),
         ListOfScores
     ),
-    piecesOf(Opponent, Board, ListOfOpponentPieces),
     findall(
         Score,
         (   

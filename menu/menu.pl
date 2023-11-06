@@ -65,7 +65,7 @@ askWhoStarts(p-h, FirstPlayer) :-
     readInputBetween(0, 1, Num),
     mapPlayer(Num, FirstPlayer, p-h).  
 
-askWhoStarts(P1-P2, P1). % botVsBot
+askWhoStarts(P1-_, P1). % botVsBot
 
 setGame(Mode) :-
     clear,
