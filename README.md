@@ -74,7 +74,7 @@ This procedure shall be repeated until one of the following conditions is met:
 
 - **Dynamic Board Size:** The initial_state/2 predicate initializes the game board. It takes the dimensions of the board and applies a series of transformations (`setBoard, setSpecialSquares, setInitialPieces`) to set up the initial game board with pieces and special squares.
 
-#### Examples of board states:
+### Examples of board states:
 
 - **Initial State:** All pieces are in their starting positions.
   ```
@@ -112,23 +112,7 @@ This procedure shall be repeated until one of the following conditions is met:
   (blueGoal position)
     ```
 
-
-
-Game Loop
-The gameLoop/4 predicate is the heart of the game logic, where the actual gameplay occurs. This recursive predicate handles the sequence of events in the game:
-
-Game Over Check: The predicate first checks if the game has ended by calling gameOver/2. If the game is over, it announces the winner and ends the recursion.
-Piece Selection: It asks the current player (human or AI) to choose a piece with choosePiece/5.
-Move Type Selection: Depending on the possible moves for the selected piece, it asks the player to choose a move type with chooseMoveType/4.
-Move Execution: The chosen move is executed with move/3, which updates the game state.
-Turn Handling: It updates the game state to reflect the change in turn with changeTurn/2.
-Player Type Handling: It switches the player type if necessary with changePlayerType/3.
-Display Update: The updated game state is displayed with displayGame/1, and the move history is printed with printMoveHistory/1.
-Recursion: The predicate calls itself recursively to continue the game loop, passing the new game state and potentially the next player's type.
-
-
-
-### Game State Visualization
+## Game State Visualization
 - `display_game(+GameState)` is a predicate responsible for visualizing the current game state. It takes the current game state tuple and displays the board and other relevant information to the player. This includes displaying the columns and the pieces on the board using ASCII characters or symbols to represent different pieces.
 
 - The game state visualization makes use of auxiliary predicates such as `displayCols/1, headerBorder/1, and displayBoard/3` to create a user-friendly display of the board. These predicates are designed to be flexible, accommodating boards of various sizes and configurations.
@@ -175,21 +159,92 @@ Recursion: The predicate calls itself recursively to continue the game loop, pas
   - `change_cell/5` for modifying the board state by changing the value of a specified cell.
 
 
-### Greedy Bot Behavior
+## List Of Valid Moves
 
-`mostValueableMove/3`
-- Selects the move with the highest score for the current player's piece based on move value calculations.
+  ```prolog
+  valid_move((Player, X1, Y1), (MoveType, X2, Y2), Board).
+  ```
+  - This predicate takes a move and a board as input and decides if the move is valid based on the current state of the game.
 
- `value/3`
-- Evaluates the game state value from the perspective of `Player`, calculating the score based on the distance of all pieces from the goal.
+ - There are two types of moves: 
+   - Normal move (MoveType is 0): The move is valid if `canMove/6` is satisfied.
+   - Capture move (MoveType is 1): The move is valid if `canCapture/6` is satisfied.
 
-`choose_move/4`
-- Chooses and executes the best move based on a heuristic for the greedy bot. 
-      
+ <br>
+ <br>
+
+ ```prolog
+  valid_moves((Turn, _, Board), Player, ListOfMoves).
+  ```
+- This predicate generates all valid moves for a given player during their turn.
+
+  - First, the size of the board is obtained using getBoardSize/3.
+  - The predicate uses findall/3 to generate a list of all valid normal moves (ListOfMoves0 - `Moves`) and capture moves (ListOfMoves1 - `Captures`).
+  - After generating both lists, they are concatenated using append/3 into a single list (ListOfMoves2).
+  - Finally, the list is sorted to give the final ListOfMoves, ensuring that no duplicate moves are present.
+
+
+## End Of Game
+- The predicate `game_over(+GameState, -Winner)` is used to check if the game is over and who won the game. It takes the current game state and returns the winner of the game or false if the game is not over.
+
+- The game is over if one of the following conditions is met:
+  - A player has reached the opponent's goal.
+  - A player has no valid moves available.
+  - Both players have made the same move 3 times in a row.
+
+
+## Game State Evaluation
+
+- The predicate `value(+GameState, +Player, -Value)` is used to evaluate the game state from the perspective of a player and returns a value for the state.
+
+- The value of a game state is calculated as follows:
+
+  - The distance is calculated by the `distance/3` predicate, which uses the `Manhattan distance formula` to calculate the distance between two points.
+
+  - the sum of the 1/distances of each Player pieces from the playerGoal.
+  
+  - the sum of the 1/distances of each Opponent pieces from the opponentGoal.
+  
+  - the difference between the two sums is the value of the game state.
+
+
+## Computer Plays
+
+### Easy Bot Move Selection
+
+- To determine its move, the bot first generates a random position on the board, then checks if it is a piece of its color and then utilizes the predicate `valid_moves_piece((Turn, _, Board), (Player, X1, Y1), ListOfMoves)`, which generates a list of all valid moves available to that piece. From this list, the bot chooses a random move, thereby introducing an element of unpredictability to its gameplay strategy.
+
+- The easy bot is not concerned with the value of a move, only that it is valid. Therefore, it does not use the `value/3` predicate to evaluate the game state.
+
+- If a `captureMove` is chosen, the bot will also choose a random empty position to place the captured piece.
+
+### Greedy Bot Move Selection
+
+- The greedy bot picks the move that maximizes its position advantage, comparing the current GameState `value` with the potential new `value` after the move (new GameState).
+
+- To determine its move, the greedy bot utilizes the predicate `mostValueableMove(GameState, Piece, Move)`.
+
+- Selects the move with the highest score for the current player's piece based on move score calculations:
+```prolog
       0,9 * (1/Distance_from_Goal) + 0,1 * Can_Capture
+```   
 
-- It uses the `mostValueableMove` predicate to select the best move and the `value` predicate to calculate the score before and after a potential move.
-- The greedy bot picks the move that maximizes its position advantage, comparing the current score with the potential new score after the move.
+- If a `captureMove` is chosen, the bot will also choose the empty position that maximizes its position advantage to place the captured piece. Which is done by the predicate `furthestPosition(Player, Gamestate, X, Y)`, that selects the furthest empty position from the opponent's goal.
+
+- It is done inside the `choose_move(+GameState, +Player, +Level, -Move)` predicate, and aftet that, it uses the `value/3` predicate to calculate the score before and after the potential move.
+
 - If the new game state score is greater than or equal to the current score, it chooses that move.
 
+  
 
+## Conclusions
+
+The game developed has demonstrated functional efficacy in executing the designated board game with the AI component capable of interacting within the game's parameters as required. However, there were some aspects that couldn't be implemented due to time constraints and the complexity of the task:
+
+  - The first opportunity to improve lies within the heuristic approach of the greedy bot. The current implementation operates on a short-term outlook, making decisions based on the immediate optimal move. This approach lacks the strategic depth of considering future moves and their potential impact, which could be improved by integrating a lookahead algorithm pruning to forecast the consequences of current actions.
+
+  - Another aspect that could be improved is the user interface, specifically by adding the functionality to navigate back through menus during gameplay. This would enhance the user experience by providing more flexibility and allowing users to correct inadvertent selections without restarting the program.
+
+  - Lastly, the representation of the board as a traditional square grid could be transformed into a diagonal (losango) layout to better reflect the actual movements and distances between pieces on the board. However, this change would be purely aesthetic and does not affect the functionality of the game.
+
+These enhancements would form the basis of the roadmap for the next phase of development, with a focus on creating a more sophisticated AI opponent and a more user-friendly interface, thereby elevating the overall quality and engagement of the game.
